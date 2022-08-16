@@ -17,7 +17,7 @@ const customStyles = {
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement(document.getElementById('root'));
 
-function HomePage() {
+function HomePage({loggedIn, login}) {
 
     let subtitle;
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -36,6 +36,10 @@ function HomePage() {
         setIsOpen(false);
     }
 
+    function upload() {
+
+    }
+
     return (
         <>
             <Modal
@@ -49,7 +53,7 @@ function HomePage() {
                     <div className="modal-body mb-0 p-0">
                         <ReactPlayer
                             url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
-                          //  light='true'
+                            //  light='true'
                         >
 
                         </ReactPlayer>
@@ -75,8 +79,12 @@ function HomePage() {
                             <h1>Advanced Electronic Signature</h1>
                             <h2>Electronically signs PDF documents with an advanced electronic signature</h2>
                             <div className="d-flex justify-content-center justify-content-lg-start">
-                                <a href="#about" className="btn-get-started scrollto">
-                                    Get Started</a>
+                                {loggedIn == false ? (
+                                    <a href="#" className="btn-get-started scrollto" onClick={login}>
+                                        Get Started</a>
+                                ) : (<a href="#contact" className="btn-get-started scrollto">
+                                    Upload</a>)}
+
                                 <a href="#" className="glightbox btn-watch-video" onClick={openModal}>
 
                                     <i className="bi bi-play-circle"></i>
@@ -224,24 +232,60 @@ function HomePage() {
                     </div>
                 </section>
 
+                {loggedIn == false ? (
+                    <section id="cta" className="cta">
+                        <div className="container" data-aos="zoom-in">
 
-                <section id="cta" className="cta">
+                            <div className="row">
+                                <div className="col-lg-9 text-center text-lg-start">
+                                    <h3>Call To Action</h3>
+                                    <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                                        fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                                        culpa
+                                        qui officia deserunt mollit anim id est laborum.</p>
+                                </div>
+                                <div className="col-lg-3 cta-btn-container text-center">
+                                    <a className="cta-btn align-middle" href="#">Call To Action</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+                ) : (<section id="contact" className="contact">
                     <div className="container" data-aos="zoom-in">
 
                         <div className="row">
-                            <div className="col-lg-9 text-center text-lg-start">
-                                <h3>Call To Action</h3>
+                            <div className="col-lg-6 text-center text-lg-start">
+                                <h3>Upload Document for Signing</h3>
                                 <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
                                     fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
                                     qui officia deserunt mollit anim id est laborum.</p>
                             </div>
-                            <div className="col-lg-3 cta-btn-container text-center">
-                                <a className="cta-btn align-middle" href="#">Call To Action</a>
+                            <div className="col-lg-6 cta-btn-container text-lg-start">
+                                {/*<a className="cta-btn align-middle" href="#" onClick={upload}>Upload</a>*/}
+                                {/*<div className="card-body">*/}
+                                    <h3>Upload Document for Signing</h3>
+                                    {/*<hr/>*/}
+                                    <form encType="multipart/form-data" method="post" className="php-email-form">
+                                        <div className="form-group">
+
+                                                <div className="custom-file">
+                                                    <input className="custom-file-input" id="document" name="document"
+                                                           required type="file"/>
+                                                    <label className="custom-file-label">Choose file...</label>
+                                                </div>
+
+                                        </div>
+                                        <div className="text-center">
+                                            <a className="contact-btn" type="submit">Upload</a>
+                                        </div>
+                                    </form>
+                                {/*</div>*/}
                             </div>
                         </div>
 
                     </div>
-                </section>
+                </section>)}
 
 
                 <section id="faq" className="faq section-bg">
