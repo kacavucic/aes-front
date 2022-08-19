@@ -1,6 +1,6 @@
 import React from "react";
 
-function HomePage({loggedIn, login, cookies}) {
+function HomePage() {
     return (
         <main id="main">
             <section id="about" className="about">

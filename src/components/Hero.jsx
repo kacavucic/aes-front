@@ -2,6 +2,7 @@ import Modal from "react-modal";
 import ReactPlayer from "react-player";
 import hero from "../assets/img/hero-img.png";
 import React, {useState} from "react";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 const customStyles = {
@@ -19,7 +20,9 @@ const customStyles = {
 Modal.setAppElement(document.getElementById('root'));
 
 
-function Hero({loggedIn, login, logout}) {
+function Hero() {
+
+    const {keycloak, initialized} = useKeycloak();
 
     let subtitle;
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -77,11 +80,17 @@ function Hero({loggedIn, login, logout}) {
                             <h1>Advanced Electronic Signature</h1>
                             <h2>Electronically signs PDF documents with an advanced electronic signature</h2>
                             <div className="d-flex justify-content-center justify-content-lg-start">
-                                {loggedIn == false ? (
-                                    <a href="#" className="btn-get-started" onClick={login}>
+
+
+                                {!keycloak.authenticated && (
+                                    <a href="#" className="btn-get-started" onClick={keycloak.login}>
                                         Get Started</a>
-                                ) : (<a href="#contact" className="btn-get-started">
-                                    Upload</a>)}
+                                )}
+
+                                {!!keycloak.authenticated && (
+                                    <a href="/initiateSigningSession" className="btn-get-started">
+                                        Upload</a>
+                                )}
 
                                 <a href="#" className="glightbox btn-watch-video" onClick={openModal}>
 
