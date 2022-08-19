@@ -5,7 +5,7 @@ const PrivateRoute = ({ children }) => {
 
     const isLoggedIn = keycloak.authenticated;
 
-    return isLoggedIn ? children : <p>NISI LOGOVAN</p>;
+    return isLoggedIn ? children : keycloak.login();
 };
 
 export default PrivateRoute;

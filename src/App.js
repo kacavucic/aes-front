@@ -9,6 +9,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PrivateRoute from "./helpers/PrivateRoute";
 import InitiateSigningSessionPage from "./pages/InitiateSigningSessionPage";
+import Loading from "./components/Loading";
 
 function App() {
 
@@ -16,9 +17,9 @@ function App() {
         console.log('onKeycloakEvent', event, error);
     }
 
-    function onKeycloakTokens(tokens) {
-        console.log('onKeycloakTokens', tokens);
-    }
+    // function onKeycloakTokens(tokens) {
+    //     console.log('onKeycloakTokens', tokens);
+    // }
 
     return (
         <div id="page-container">
@@ -32,7 +33,8 @@ function App() {
                                 window.location.origin + "/silent-check-sso.html"
                         }}
                         onEvent={onKeycloakEvent}
-                        onTokens={onKeycloakTokens}
+                        // onTokens={onKeycloakTokens}
+                        LoadingComponent={<Loading />}
                     >
                         <NavBar/>
                         <Hero/>

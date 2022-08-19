@@ -82,7 +82,7 @@ function InitiateSigningSessionPage() {
                                                        onChange={onFileChange}/>
                                                 <button className="btn btn-outline-secondary" type="button"
                                                         id="file-button"
-                                                        // onClick={upload}
+                                                        onClick={upload}
                                                 >Upload
                                                 </button>
                                             </div>
