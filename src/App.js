@@ -1,14 +1,17 @@
 import './App.css';
 import NavBar from './components/NavBar';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import HomePage from './components/HomePage';
 import Footer from './components/Footer';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
 import qs from "qs";
 import axios from "axios";
+import InitiateSigningSessionPage from './components/InitiateSigningSessionPage';
+import Hero from "./components/Hero";
 
 function App() {
+
 
     const [loggedIn, setLoggedIn] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
@@ -39,7 +42,8 @@ function App() {
     }
 
     function checkCredentials() {
-        if (cookies.access_token != null) {
+        console.log("check " +cookies.access_token);
+        if (cookies.access_token != undefined) {
             return true;
         } else {
             return false;
@@ -51,6 +55,7 @@ function App() {
         var datum = new Date(expireDate);
         setCookie("access_token", token.access_token, {expires: datum});
         console.log('Obtained Access token');
+        setLoggedIn(true);
         window.location.href = redirectUri;
     }
 
@@ -84,24 +89,31 @@ function App() {
 
     useEffect(() => {
         setLoggedIn(checkCredentials());
+        console.log("ULOGOVAN: " + loggedIn);
         let i = window.location.href.indexOf('code');
         if (!loggedIn && i != -1) {
             retrieveToken(window.location.href.substring(i + 5));
         }
     }, []);
 
+
     return (
+
         <div id="page-container">
             <div id="content-wrap">
-                <BrowserRouter className="App">
-                    <NavBar loggedIn={loggedIn} login={login} logout={logout}/>
-                    <Routes>
-                        <Route exact path="/" element={<HomePage loggedIn={loggedIn} login={login}/>}/>
-                    </Routes>
-                    <Footer></Footer>
-                </BrowserRouter>
+                <NavBar loggedIn={loggedIn} login={login} logout={logout}/>
+                <Hero loggedIn={loggedIn} login={login}></Hero>
+                <Routes>
+                    <Route exact path="/"
+                           element={<HomePage loggedIn={loggedIn} login={login} cookies={cookies}/>}/>
+                    <Route exact path="/ss"
+                           element={<InitiateSigningSessionPage loggedIn={loggedIn} login={login}
+                                                                cookies={cookies}/>}/>
+                </Routes>
+                <Footer></Footer>
             </div>
         </div>
+
     );
 }
 
