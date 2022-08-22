@@ -1,6 +1,15 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 function Footer() {
+
+    // Scrolling
+    const [scroll, setScroll] = useState(false);
+    useEffect(() => {
+        window.addEventListener("scroll", () => {
+            setScroll(window.scrollY > 100);
+        });
+    }, []);
+
     return (
         <>
             <footer id="footer">
@@ -61,8 +70,8 @@ function Footer() {
                     </div>
                 </div>
             </footer>
-            {/*<div id="preloader"></div>*/}
-            <a href="#" className="back-to-top d-flex align-items-center justify-content-center"><i
+            <a href="#" className={scroll ? "back-to-top d-flex align-items-center justify-content-center active" :
+                "back-to-top d-flex align-items-center justify-content-center"}><i
                 className="bi bi-arrow-up-short"></i></a>
         </>
     );

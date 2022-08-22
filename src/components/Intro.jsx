@@ -1,8 +1,9 @@
 import Modal from "react-modal";
 import ReactPlayer from "react-player";
 import hero from "../assets/img/hero-img.png";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
+import useScroll from "../helpers/useScroll";
 
 
 const customStyles = {
@@ -20,10 +21,16 @@ const customStyles = {
 Modal.setAppElement(document.getElementById('root'));
 
 
-function Hero() {
+function Intro() {
 
+    // Keycloak
     const {keycloak, initialized} = useKeycloak();
 
+    // Scrolling
+    const [executeScroll, elRef] = useScroll("start");
+    useEffect(executeScroll, []);
+
+    // Modal
     let subtitle;
     const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -70,7 +77,9 @@ function Hero() {
                 </div>
             </Modal>
 
-            <section id="hero" className="d-flex align-items-center">
+            <section
+                ref={elRef}
+                id="hero" className="d-flex align-items-center">
 
                 <div className="container">
                     <div className="row">
@@ -111,4 +120,4 @@ function Hero() {
     );
 }
 
-export default Hero;
+export default Intro;

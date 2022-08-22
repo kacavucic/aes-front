@@ -113,7 +113,7 @@ h1, h2, h3, h4, h5, h6 {
     background: rgba(40, 58, 90, 0.9);
 }
 
-.inner-page{
+.inner-page {
     padding: 0;
 }
 
@@ -365,7 +365,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*--------------------------------------------------------------
-# Hero Section
+# Intro Section
 --------------------------------------------------------------*/
 #hero {
     width: 100%;
@@ -1624,7 +1624,7 @@ section {
     padding: 15px 0;
     background: #f3f5fa;
     min-height: 40px;
-    /*margin-top: 72px;*/
+    margin-top: 72px;
 }
 
 /*@media (max-width: 992px) {*/
@@ -1861,7 +1861,7 @@ section {
     border-radius: 10px;
 }
 
-#file-button{
+#file-button {
     margin-left: 8px;
     background-color: transparent;
     font-family: "Jost", sans-serif;
@@ -1874,7 +1874,8 @@ section {
     color: #fff;
     border: 1px solid #ced4da;
 }
-#file-input{
+
+#file-input {
     margin-right: 2px;
     background-color: transparent;
     font-family: "Jost", sans-serif;
@@ -1885,4 +1886,12 @@ section {
     border-radius: 50px;
     transition: 0.5s;
     color: #fff;
+}
+
+#otp-label {
+    color: #fff;
+    font-family: "Jost", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1px;
 }

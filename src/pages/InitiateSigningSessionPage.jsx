@@ -1,13 +1,20 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
 import axios from "axios";
-import {useState} from "react";
+import {NavLink, useNavigate} from "react-router-dom";
+import useScroll from "../helpers/useScroll"
 
-function InitiateSigningSessionPage() {
+function InitiateSigningSessionPage({addSigningSessionId}) {
+
+    let navigate = useNavigate();
+    const [executeScroll, elRef] = useScroll("center");
+    useEffect(executeScroll, []);
 
     const {keycloak, initialized} = useKeycloak();
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    function upload() {
+
+    function handleUpload() {
         const data = new FormData();
         data.append('document', selectedFile.selectedFile,
             selectedFile.selectedFile.name);
@@ -28,34 +35,46 @@ function InitiateSigningSessionPage() {
         axios(config)
             .then(function (response) {
                 console.log(JSON.stringify(response.data));
+                addSigningSessionId(response.data.id);
+                navigate("/sign");
             })
             .catch(function (error) {
                 console.log(error);
             });
     }
 
-    const [selectedFile, setSelectedFile] = useState(null);
-
     function onFileChange(event) {
         setSelectedFile({selectedFile: event.target.files[0]});
     }
 
+    let activeStyle = {
+        color: "#47b2e4",
+    };
+    let inactiveStyle = {
+        color:"#444444"
+    };
     return (
-        <main id="main">
+        <>
+            {/*<Intro/>*/}
+            <main ref={elRef} id="main">
 
-            <section id="breadcrumbs" className="breadcrumbs">
-                <div className="container">
+                <section id="breadcrumbs" className="breadcrumbs">
+                    <div className="container">
 
-                    <ol>
-                        <li><a href="index.html">Home</a></li>
-                        <li>Initiate Signing Session</li>
-                    </ol>
-                    <h2>Initiate Signing Session</h2>
+                        <ol>
+                            <li><NavLink to="/" style={({isActive}) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Home</NavLink></li>
+                            <li><NavLink to="/initiateSigningSession" style={({isActive}) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Initiate Signing Session</NavLink></li>
+                        </ol>
+                        <h2>Initiate Signing Session</h2>
 
-                </div>
-            </section>
+                    </div>
+                </section>
 
-            <section className="inner-page">
+                <section className="inner-page">
                     <section id="contact" className="contact">
                         <div className="container" data-aos="zoom-in">
                             <div className="row">
@@ -82,7 +101,7 @@ function InitiateSigningSessionPage() {
                                                        onChange={onFileChange}/>
                                                 <button className="btn btn-outline-secondary" type="button"
                                                         id="file-button"
-                                                        onClick={upload}
+                                                        onClick={handleUpload}
                                                 >Upload
                                                 </button>
                                             </div>
@@ -92,8 +111,10 @@ function InitiateSigningSessionPage() {
                             </div>
                         </div>
                     </section>
-            </section>
-        </main>
+                </section>
+            </main>
+        </>
+
     );
 }
 

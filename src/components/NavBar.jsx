@@ -1,28 +1,82 @@
 import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 
 var qs = require('qs');
 
-function NavBar() {
+function NavBar({addSection}) {
+
+    // Keycloak
     const {keycloak, initialized} = useKeycloak();
 
+    // Navigation
+    const location = useLocation();
+    let navigate = useNavigate();
+    const [isHome, setIsHome] = useState(false);
+
+    // Scrolling
     const [scroll, setScroll] = useState(false);
+    const select = (el, all = false) => {
+        el = el.trim()
+        if (all) {
+            return [...document.querySelectorAll(el)]
+        } else {
+            return document.querySelector(el)
+        }
+    }
+    const scrollto = (el) => {
+        if (location.pathname != "/") {
+            addSection(el);
+            navigate("/");
+            return;
+        }
+        console.log("element: " + el);
+        let header = select('#header')
+        let offset = header.offsetHeight
+
+        let elementPos = select(el).offsetTop
+        window.scrollTo({
+            top: elementPos - offset,
+            behavior: 'smooth'
+        })
+
+    }
+
     useEffect(() => {
         window.addEventListener("scroll", () => {
             setScroll(window.scrollY > 100);
         });
-    }, []);
+
+        const currentPath = location.pathname;
+        // console.log(currentPath);
+        if (currentPath == "/") {
+            setIsHome(true);
+        } else {
+            setIsHome(false);
+        }
+
+    }, [location]);
 
     return (
         <>
-            <header id="header" className={scroll ? "fixed-top  header-scrolled" : "fixed-top"}>
+            <header id="header"
+                    className={isHome ? (scroll ? "fixed-top  header-scrolled" : "fixed-top") : "fixed-top header-inner-pages"}>
                 <div className="container d-flex align-items-center">
-                    <h1 className="logo me-auto"><a href="index.html">AES</a></h1>
+                    <h1 className="logo me-auto"><a href="/">AES</a></h1>
                     <nav id="navbar" className="navbar">
                         <ul>
-                            <li><a className="nav-link active" href="#hero">Home</a></li>
-                            <li><a className="nav-link" href="#about">About</a></li>
-                            <li><a className="nav-link" href="#services">Services</a></li>
+                            <li className="dropdown"><NavLink to="/"><span>Home</span><i
+                                className="bi bi-chevron-down"></i></NavLink>
+                                <ul>
+                                    <li>
+                                        <a role="button" onClick={() => scrollto("#about")}>About Us</a>
+                                    </li>
+                                    <li><a role="button" onClick={() => scrollto("#services")}>Services</a></li>
+                                    <li><a role="button" onClick={() => scrollto("#cta")}>Call To Action</a></li>
+                                    <li><a role="button" onClick={() => scrollto("#faq")}>FAQ</a></li>
+                                </ul>
+                            </li>
+                            <li><NavLink to="/initiateSigningSession">Upload</NavLink></li>
 
                             {!keycloak.authenticated && (
                                 //TODO login btn on click resizes
@@ -33,9 +87,6 @@ function NavBar() {
                                 <li><a className="getstarted" href="#" onClick={keycloak.logout}>Log Out
                                     ({keycloak.tokenParsed.preferred_username}) </a></li>
                             )}
-
-
-
 
 
                         </ul>
