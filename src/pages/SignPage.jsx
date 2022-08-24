@@ -1,19 +1,28 @@
 import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import useScroll from "../helpers/useScroll";
-
-var qs = require('qs');
+import {NavLink, useNavigate} from "react-router-dom";
+import {Alert} from "react-bootstrap";
 
 function SignPage({signingSessionId}) {
 
     let navigate = useNavigate();
-    const [executeScroll, elRef] = useScroll();
-    useEffect(executeScroll, []);
 
     const {keycloak, initialized} = useKeycloak();
     const [otp, setOtp] = useState("");
+
+    const [errors, setErrors] = useState(null)
+    useEffect(() => {
+
+    }, [errors]);
+
+    const getErrorView = () => {
+        return (
+            <Alert variant={"danger"}>
+                {errors.map((error) => <li key={error}>{error}</li>)}
+            </Alert>
+        )
+    }
 
     function handleChange(e) {
         setOtp(e.target.value);
@@ -23,11 +32,11 @@ function SignPage({signingSessionId}) {
     function handleSign(e) {
         e.preventDefault();
 
-        var data = JSON.stringify({
+        let data = JSON.stringify({
             "otp": otp
         });
 
-        var config = {
+        let config = {
             method: 'post',
             url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/sign',
             headers: {
@@ -44,21 +53,51 @@ function SignPage({signingSessionId}) {
                 navigate("/download");
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request was never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
             });
 
     }
 
+    let activeStyle = {
+        color: "#47b2e4",
+    };
+    let inactiveStyle = {
+        color: "#444444"
+    };
+
     return (
-        <main ref={elRef} id="main">
+        <main
+            id="main">
 
             <section id="breadcrumbs" className="breadcrumbs">
                 <div className="container">
 
                     <ol>
-                        <li><a href="index.html">Home</a></li>
-                        <li>Initiate Signing Session</li>
-                        <li>Sign</li>
+                        <li><NavLink to="/" style={({isActive}) =>
+                            isActive ? activeStyle : inactiveStyle
+                        }>Home</NavLink></li>
+                        <li><NavLink to="/initiateSigningSession" style={({isActive}) =>
+                            isActive ? activeStyle : inactiveStyle
+                        }>Initiate Signing Session</NavLink></li>
+                        <li><NavLink to="/sign" style={({isActive}) =>
+                            isActive ? activeStyle : inactiveStyle
+                        }>Sign</NavLink></li>
                     </ol>
                     <h2>Sign Document</h2>
 
@@ -80,18 +119,18 @@ function SignPage({signingSessionId}) {
                                 <h3>Sign Document</h3>
                                 <form onSubmit={handleSign} className="file-form">
                                     <div className="form-group">
-                                        <label id="otp-label" className="lead" htmlFor="name">OTP</label>
-                                        <input type="text" className="form-control" name="otp" id="file-input"
-                                               placeholder="Enter OTP code"
-                                               onChange={handleChange}
-                                               required/>
-                                    </div>
-                                    <div className="text-end mt-3">
-                                        <button className="btn btn-outline-secondary" id="file-button"
-                                                type="submit">Sign
-                                        </button>
+                                        <div className="input-group">
+                                            <input type="text" className="form-control" name="otp" id="file-input"
+                                                   placeholder="Enter OTP"
+                                                   onChange={handleChange}
+                                                   required/>
+                                            <button className="btn btn-outline-secondary" id="file-button"
+                                                    type="submit">Sign
+                                            </button>
+                                        </div>
                                     </div>
                                 </form>
+                                {errors ? getErrorView() : <></>}
                             </div>
                         </div>
                     </div>

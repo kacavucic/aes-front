@@ -12,21 +12,22 @@ function HomePage({section, addSection}) {
             return document.querySelector(el)
         }
     }
-    const scrollto = (el) => {
-        console.log("element home: " + el);
-        let header = select('#header')
-        let offset = header.offsetHeight
 
-        let elementPos = select(el).offsetTop
-        window.scrollTo({
-            top: elementPos - offset,
-            behavior: 'smooth'
-        })
-        addSection("");
-    }
 
     useEffect(() => {
-        // console.log("primio sam section: " + section);
+        const scrollto = (el) => {
+            console.log("element home: " + el);
+            let header = select('#header')
+            let offset = header.offsetHeight
+
+            let elementPos = select(el).offsetTop
+            window.scrollTo({
+                top: elementPos - offset,
+                behavior: 'smooth'
+            })
+            addSection("");
+        }
+        console.log("primio sam section: " + section);
         if (section !== "") {
             scrollto(section);
         }
@@ -53,13 +54,13 @@ function HomePage({section, addSection}) {
                                     magna aliqua.
                                 </p>
                                 <ul>
-                                    <li><i className="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea
+                                    <li><i className="ri-check-double-line"/> Ullamco laboris nisi ut aliquip ex ea
                                         commodo consequat
                                     </li>
-                                    <li><i className="ri-check-double-line"></i> Duis aute irure dolor in reprehenderit
+                                    <li><i className="ri-check-double-line"/> Duis aute irure dolor in reprehenderit
                                         in voluptate velit
                                     </li>
-                                    <li><i className="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea
+                                    <li><i className="ri-check-double-line"/> Ullamco laboris nisi ut aliquip ex ea
                                         commodo consequat
                                     </li>
                                 </ul>
@@ -72,7 +73,8 @@ function HomePage({section, addSection}) {
                                     non proident, sunt in
                                     culpa qui officia deserunt mollit anim id est laborum.
                                 </p>
-                                <a href="#" className="btn-learn-more">Learn More</a>
+                                <a href="https://ec.europa.eu/digital-building-blocks/wikis/display/ESIGKB/What+are+the+levels,+simple,+advanced+and+qualified+of+electronic+signatures"
+                                   className="btn-learn-more">Learn More</a>
                             </div>
                         </div>
 
@@ -92,8 +94,8 @@ function HomePage({section, addSection}) {
                             <div className="col-xl-3 col-md-6 d-flex align-items-stretch" data-aos="zoom-in"
                                  data-aos-delay="100">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bxl-dribbble"></i></div>
-                                    <h4><a href="">Lorem Ipsum</a></h4>
+                                    <div className="icon"><i className="bx bxl-dribbble"/></div>
+                                    <h4><a href="/">Lorem Ipsum</a></h4>
                                     <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
                                 </div>
                             </div>
@@ -101,8 +103,8 @@ function HomePage({section, addSection}) {
                             <div className="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-md-0"
                                  data-aos="zoom-in" data-aos-delay="200">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bx-file"></i></div>
-                                    <h4><a href="">Sed ut perspici</a></h4>
+                                    <div className="icon"><i className="bx bx-file"/></div>
+                                    <h4><a href="/">Sed ut perspici</a></h4>
                                     <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
                                 </div>
                             </div>
@@ -110,8 +112,8 @@ function HomePage({section, addSection}) {
                             <div className="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0"
                                  data-aos="zoom-in" data-aos-delay="300">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bx-tachometer"></i></div>
-                                    <h4><a href="">Magni Dolores</a></h4>
+                                    <div className="icon"><i className="bx bx-tachometer"/></div>
+                                    <h4><a href="/">Magni Dolores</a></h4>
                                     <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
                                 </div>
                             </div>
@@ -119,8 +121,8 @@ function HomePage({section, addSection}) {
                             <div className="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0"
                                  data-aos="zoom-in" data-aos-delay="400">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bx-layer"></i></div>
-                                    <h4><a href="">Nemo Enim</a></h4>
+                                    <div className="icon"><i className="bx bx-layer"/></div>
+                                    <h4><a href="/">Nemo Enim</a></h4>
                                     <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
                                 </div>
                             </div>
@@ -141,7 +143,7 @@ function HomePage({section, addSection}) {
                                     qui officia deserunt mollit anim id est laborum.</p>
                             </div>
                             <div className="col-lg-3 cta-btn-container text-center">
-                                <a className="cta-btn align-middle" href="#">Call To Action</a>
+                                <a className="cta-btn align-middle" href="/">Call To Action</a>
                             </div>
                         </div>
 
@@ -160,12 +162,12 @@ function HomePage({section, addSection}) {
                         <div className="faq-list">
                             <ul>
                                 <li data-aos="fade-up" data-aos-delay="100">
-                                    <i className="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse"
-                                                                                       className="collapse"
-                                                                                       data-bs-target="#faq-list-1">Non
+                                    <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
+                                                                                    className="collapse"
+                                                                                    data-bs-target="#faq-list-1">Non
                                     consectetur a erat nam at lectus urna duis? <i
-                                        className="bx bx-chevron-down icon-show"></i><i
-                                        className="bx bx-chevron-up icon-close"></i></a>
+                                        className="bx bx-chevron-down icon-show"/><i
+                                        className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-1" className="collapse show" data-bs-parent=".faq-list">
                                         <p>
                                             Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus
@@ -176,11 +178,11 @@ function HomePage({section, addSection}) {
                                 </li>
 
                                 <li data-aos="fade-up" data-aos-delay="200">
-                                    <i className="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse"
-                                                                                       data-bs-target="#faq-list-2"
-                                                                                       className="collapsed">Feugiat
-                                    scelerisque varius morbi enim nunc? <i className="bx bx-chevron-down icon-show"></i><i
-                                        className="bx bx-chevron-up icon-close"></i></a>
+                                    <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
+                                                                                    data-bs-target="#faq-list-2"
+                                                                                    className="collapsed">Feugiat
+                                    scelerisque varius morbi enim nunc? <i className="bx bx-chevron-down icon-show"/><i
+                                        className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-2" className="collapse" data-bs-parent=".faq-list">
                                         <p>
                                             Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id
@@ -192,11 +194,11 @@ function HomePage({section, addSection}) {
                                 </li>
 
                                 <li data-aos="fade-up" data-aos-delay="300">
-                                    <i className="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse"
-                                                                                       data-bs-target="#faq-list-3"
-                                                                                       className="collapsed">Dolor sit
-                                    amet consectetur adipiscing elit? <i className="bx bx-chevron-down icon-show"></i><i
-                                        className="bx bx-chevron-up icon-close"></i></a>
+                                    <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
+                                                                                    data-bs-target="#faq-list-3"
+                                                                                    className="collapsed">Dolor sit
+                                    amet consectetur adipiscing elit? <i className="bx bx-chevron-down icon-show"/><i
+                                        className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-3" className="collapse" data-bs-parent=".faq-list">
                                         <p>
                                             Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci.
@@ -209,12 +211,12 @@ function HomePage({section, addSection}) {
                                 </li>
 
                                 <li data-aos="fade-up" data-aos-delay="400">
-                                    <i className="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse"
-                                                                                       data-bs-target="#faq-list-4"
-                                                                                       className="collapsed">Tempus quam
+                                    <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
+                                                                                    data-bs-target="#faq-list-4"
+                                                                                    className="collapsed">Tempus quam
                                     pellentesque nec nam aliquam sem et tortor consequat? <i
-                                        className="bx bx-chevron-down icon-show"></i><i
-                                        className="bx bx-chevron-up icon-close"></i></a>
+                                        className="bx bx-chevron-down icon-show"/><i
+                                        className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-4" className="collapse" data-bs-parent=".faq-list">
                                         <p>
                                             Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim
@@ -226,12 +228,12 @@ function HomePage({section, addSection}) {
                                 </li>
 
                                 <li data-aos="fade-up" data-aos-delay="500">
-                                    <i className="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse"
-                                                                                       data-bs-target="#faq-list-5"
-                                                                                       className="collapsed">Tortor
+                                    <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
+                                                                                    data-bs-target="#faq-list-5"
+                                                                                    className="collapsed">Tortor
                                     vitae purus faucibus ornare. Varius vel pharetra vel turpis nunc eget lorem
-                                    dolor? <i className="bx bx-chevron-down icon-show"></i><i
-                                        className="bx bx-chevron-up icon-close"></i></a>
+                                    dolor? <i className="bx bx-chevron-down icon-show"/><i
+                                        className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-5" className="collapse" data-bs-parent=".faq-list">
                                         <p>
                                             Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae

@@ -1,9 +1,9 @@
 import Modal from "react-modal";
 import ReactPlayer from "react-player";
 import hero from "../assets/img/hero-img.png";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
-import useScroll from "../helpers/useScroll";
+import {NavLink} from "react-router-dom";
 
 
 const customStyles = {
@@ -26,10 +26,6 @@ function Intro() {
     // Keycloak
     const {keycloak, initialized} = useKeycloak();
 
-    // Scrolling
-    const [executeScroll, elRef] = useScroll("start");
-    useEffect(executeScroll, []);
-
     // Modal
     let subtitle;
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -40,7 +36,6 @@ function Intro() {
     }
 
     function afterOpenModal() {
-        // references are now sync'd and can be accessed.
         subtitle.style.color = '#37517E';
     }
 
@@ -67,19 +62,17 @@ function Intro() {
                         </ReactPlayer>
                     </div>
                     <div className="modal-footer justify-content-center">
-                        <a href="#" className="twitter"><i className="bx bxl-twitter"></i></a>
-                        <a href="#" className="facebook"><i className="bx bxl-facebook"></i></a>
-                        <a href="#" className="instagram"><i className="bx bxl-instagram"></i></a>
-                        <a href="#" className="google-plus"><i className="bx bxl-skype"></i></a>
-                        <a href="#" className="linkedin"><i className="bx bxl-linkedin"></i></a>
+                        <a href="/" className="twitter"><i className="bx bxl-twitter"/></a>
+                        <a href="/" className="facebook"><i className="bx bxl-facebook"/></a>
+                        <a href="/" className="instagram"><i className="bx bxl-instagram"/></a>
+                        <a href="/" className="google-plus"><i className="bx bxl-skype"/></a>
+                        <a href="/" className="linkedin"><i className="bx bxl-linkedin"/></a>
 
                     </div>
                 </div>
             </Modal>
 
-            <section
-                ref={elRef}
-                id="hero" className="d-flex align-items-center">
+            <section id="hero" className="d-flex align-items-center">
 
                 <div className="container">
                     <div className="row">
@@ -92,18 +85,18 @@ function Intro() {
 
 
                                 {!keycloak.authenticated && (
-                                    <a href="#" className="btn-get-started" onClick={keycloak.login}>
+                                    <a role="button" className="btn-get-started" onClick={keycloak.login}>
                                         Get Started</a>
                                 )}
 
                                 {!!keycloak.authenticated && (
-                                    <a href="/initiateSigningSession" className="btn-get-started">
-                                        Upload</a>
+                                    <NavLink to="/initiateSigningSession" className="btn-get-started">
+                                        Upload</NavLink>
                                 )}
 
-                                <a href="#" className="glightbox btn-watch-video" onClick={openModal}>
+                                <a role="button" className="glightbox btn-watch-video" onClick={openModal}>
 
-                                    <i className="bi bi-play-circle"></i>
+                                    <i className="bi bi-play-circle"/>
                                     <span>Watch Demo</span>
                                 </a>
                             </div>

@@ -2,8 +2,6 @@ import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 
-var qs = require('qs');
-
 function NavBar({addSection}) {
 
     // Keycloak
@@ -25,7 +23,7 @@ function NavBar({addSection}) {
         }
     }
     const scrollto = (el) => {
-        if (location.pathname != "/") {
+        if (location.pathname !== "/") {
             addSection(el);
             navigate("/");
             return;
@@ -49,7 +47,7 @@ function NavBar({addSection}) {
 
         const currentPath = location.pathname;
         // console.log(currentPath);
-        if (currentPath == "/") {
+        if (currentPath === "/") {
             setIsHome(true);
         } else {
             setIsHome(false);
@@ -65,8 +63,11 @@ function NavBar({addSection}) {
                     <h1 className="logo me-auto"><a href="/">AES</a></h1>
                     <nav id="navbar" className="navbar">
                         <ul>
-                            <li className="dropdown"><NavLink to="/"><span>Home</span><i
-                                className="bi bi-chevron-down"></i></NavLink>
+                            <li className="dropdown">
+                                <NavLink to="/" onClick={() => scrollto("#hero")}>
+                                    <span>Home</span>
+                                    <i className="bi bi-chevron-down"/>
+                                </NavLink>
                                 <ul>
                                     <li>
                                         <a role="button" onClick={() => scrollto("#about")}>About Us</a>
@@ -80,17 +81,17 @@ function NavBar({addSection}) {
 
                             {!keycloak.authenticated && (
                                 //TODO login btn on click resizes
-                                <li><a className="getstarted" href="#" onClick={keycloak.login}>Log In</a></li>
+                                <li><a role='button' className="getstarted" onClick={keycloak.login}>Log In</a></li>
                             )}
 
                             {!!keycloak.authenticated && (
-                                <li><a className="getstarted" href="#" onClick={keycloak.logout}>Log Out
+                                <li><a role="button" className="getstarted" onClick={keycloak.logout}>Log Out
                                     ({keycloak.tokenParsed.preferred_username}) </a></li>
                             )}
 
 
                         </ul>
-                        <i className="bi bi-list mobile-nav-toggle"></i>
+                        <i className="bi bi-list mobile-nav-toggle"/>
                     </nav>
                 </div>
             </header>

@@ -2,25 +2,41 @@ import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
 import axios from "axios";
 import {NavLink, useNavigate} from "react-router-dom";
-import useScroll from "../helpers/useScroll"
+import {Alert} from "react-bootstrap";
 
 function InitiateSigningSessionPage({addSigningSessionId}) {
 
     let navigate = useNavigate();
-    const [executeScroll, elRef] = useScroll("center");
-    useEffect(executeScroll, []);
 
     const {keycloak, initialized} = useKeycloak();
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const [errors, setErrors] = useState(null)
+    useEffect(() => {
 
-    function handleUpload() {
+    }, [errors]);
+
+
+    const getErrorView = () => {
+        return (
+            <Alert variant={"danger"}>
+                {errors.map((error) => <li key={error}>{error}</li>)}
+            </Alert>
+        )
+    }
+
+
+    function handleUpload(e) {
+        e.preventDefault();
         const data = new FormData();
-        data.append('document', selectedFile.selectedFile,
-            selectedFile.selectedFile.name);
-        console.log(selectedFile.selectedFile);
+        if (selectedFile != null) {
+            data.append('document', selectedFile.selectedFile,
+                selectedFile.selectedFile.name);
+            console.log(selectedFile.selectedFile);
+        }
 
-        var config = {
+
+        let config = {
             method: 'post',
             url: 'http://localhost:8081/v1/aes/signingSessions',
             headers: {
@@ -39,7 +55,23 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
                 navigate("/sign");
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request was never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
             });
     }
 
@@ -51,16 +83,14 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
         color: "#47b2e4",
     };
     let inactiveStyle = {
-        color:"#444444"
+        color: "#444444"
     };
     return (
         <>
-            {/*<Intro/>*/}
-            <main ref={elRef} id="main">
+            <main id="main">
 
                 <section id="breadcrumbs" className="breadcrumbs">
                     <div className="container">
-
                         <ol>
                             <li><NavLink to="/" style={({isActive}) =>
                                 isActive ? activeStyle : inactiveStyle
@@ -70,7 +100,6 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
                             }>Initiate Signing Session</NavLink></li>
                         </ol>
                         <h2>Initiate Signing Session</h2>
-
                     </div>
                 </section>
 
@@ -80,7 +109,8 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
                             <div className="row">
                                 <div className="col-lg-6 text-center text-lg-start">
                                     <h3>Upload Document for Signing</h3>
-                                    <p className="file-form"> Duis aute irure dolor in reprehenderit in
+                                    <p className="file-form">
+                                        Duis aute irure dolor in reprehenderit in
                                         voluptate
                                         velit
                                         esse cillum dolore eu
@@ -92,21 +122,23 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
                                 </div>
                                 <div className="col-lg-6 text-center text-lg-start">
                                     <h3>Upload Document for Signing</h3>
-                                    <form encType="multipart/form-data" method="post" className="file-form">
+                                    <form onSubmit={handleUpload} encType="multipart/form-data" className="file-form">
                                         <div className="form-group">
                                             <div className="input-group">
                                                 <input type="file" className="form-control" id="file-input"
                                                        aria-describedby="inputGroupFileAddon04"
                                                        aria-label="Upload"
-                                                       onChange={onFileChange}/>
-                                                <button className="btn btn-outline-secondary" type="button"
+                                                       onChange={onFileChange}
+                                                       required={true}/>
+                                                <button className="btn btn-outline-secondary" type="submit"
                                                         id="file-button"
-                                                        onClick={handleUpload}
+
                                                 >Upload
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
+                                    {errors ? getErrorView() : <></>}
                                 </div>
                             </div>
                         </div>

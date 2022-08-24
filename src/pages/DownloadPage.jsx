@@ -1,22 +1,40 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
 import axios from "axios";
 import {saveAs} from 'file-saver';
-import useScroll from "../helpers/useScroll";
+import {NavLink} from "react-router-dom";
+import {Alert} from "react-bootstrap";
 
 function DownloadPage({signingSessionId}) {
 
-    const [executeScroll, elRef] = useScroll();
-    useEffect(executeScroll, []);
-
     const {keycloak, initialized} = useKeycloak();
 
-    function handleDownload() {
+    const [errors, setErrors] = useState(null)
+    useEffect(() => {
 
-        var config = {
+    }, [errors]);
+
+    const getErrorView = () => {
+        return (
+            <Alert variant={"danger"}>
+                {errors.map((error) => <li key={error}>{error}</li>)}
+            </Alert>
+        )
+    }
+
+    function handleDownload() {
+        let resType;
+        if (errors == null) {
+            resType = '';
+        } else {
+            resType = 'blob';
+        }
+
+        let config = {
             method: 'get',
             url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/document',
-            responseType: 'blob',
+
+            responseType: resType,
             headers: {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + keycloak.token,
@@ -39,21 +57,49 @@ function DownloadPage({signingSessionId}) {
 
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request was never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
             });
     }
 
+    let activeStyle = {
+        color: "#47b2e4",
+    };
+    let inactiveStyle = {
+        color: "#444444"
+    };
+
     return (
-        <main ref={elRef} id="main">
+        <main id="main">
 
             <section id="breadcrumbs" className="breadcrumbs">
                 <div className="container">
 
                     <ol>
-                        <li><a href="index.html">Home</a></li>
-                        <li>Initiate Signing Session</li>
-                        <li>Sign</li>
-                        <li>Download</li>
+                        <li><NavLink to="/" style={({isActive}) =>
+                            isActive ? activeStyle : inactiveStyle
+                        }>Home</NavLink></li>
+                        <li><NavLink to="/initiateSigningSession" style={({isActive}) =>
+                            isActive ? activeStyle : inactiveStyle
+                        }>Initiate Signing Session</NavLink></li>
+                        <li><NavLink to="/download" style={({isActive}) =>
+                            isActive ? activeStyle : inactiveStyle
+                        }>Download</NavLink></li>
                     </ol>
                     <h2>Download Signed Document</h2>
 
@@ -73,9 +119,18 @@ function DownloadPage({signingSessionId}) {
                             </div>
                             <div className="col-lg-6 text-center text-lg-start">
                                 <h3>Download Signed Document</h3>
-                                <button className="btn btn-outline-secondary" id="file-button"
-                                        type="button" onClick={handleDownload}>Download
-                                </button>
+                                <div className="file-form">
+                                    <div className="form-group">
+                                        <div className="input-group">
+                                            <button className="btn btn-outline-secondary float-end" id="file-button"
+                                                    type="button" onClick={handleDownload}
+                                                    style={{marginLeft: 0 + 'px'}}>Download
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {errors ? getErrorView() : <></>}
                             </div>
                         </div>
                     </div>
