@@ -1392,7 +1392,7 @@ section {
 .contact {
     background: linear-gradient(rgba(40, 58, 90, 0.9), rgba(40, 58, 90, 0.9)), url(./assets/img/cta-bg.jpg) fixed center center;
     background-size: cover;
-    padding: 120px 0;
+    /*padding: 120px 0;*/
 }
 
 @media (max-width: 1024px) {
@@ -1921,51 +1921,4 @@ section {
     width: 36px;
     height: 36px;
     transition: 0.3s;
-}
-
-.datatable-crud-demo .table-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-@media screen and (max-width: 960px) {
-    .datatable-crud-demo .table-header {
-        align-items: flex-start;
-    }
-}
-
-.datatable-crud-demo .product-image {
-    width: 100px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-}
-
-.datatable-crud-demo .p-dialog .product-image {
-    width: 150px;
-    margin: 0 auto 2rem auto;
-    display: block;
-}
-
-.datatable-crud-demo .confirmation-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-@media screen and (max-width: 960px) {
-    .datatable-crud-demo .p-toolbar {
-        flex-wrap: wrap;
-    }
-
-    .datatable-crud-demo .p-toolbar .p-button {
-        margin-bottom: 0.25rem;
-    }
-
-    .datatable-crud-demo .table-header {
-        flex-direction: column;
-    }
-
-    .datatable-crud-demo .table-header .p-input-icon-left, .datatable-crud-demo .table-header input {
-        width: 100%;
-    }
 }

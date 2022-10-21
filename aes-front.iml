@@ -9,5 +9,6 @@
     <orderEntry type="library" name="glightbox" level="application" />
     <orderEntry type="library" name="bootstrap-icons" level="application" />
     <orderEntry type="library" name="boxicons" level="application" />
+    <orderEntry type="library" name="primeicons" level="application" />
   </component>
 </module>

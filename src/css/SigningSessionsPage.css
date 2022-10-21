@@ -1,0 +1,113 @@
+.status-badge {
+    border-radius: 2px;
+    padding: .25em .5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+}
+
+.status-badge.status-signed {
+    background: #C8E6C9;
+    color: #256029;
+}
+
+.status-badge.status-canceled {
+    background: #FFCDD2;
+    color: #C63737;
+}
+
+.status-badge.status-rejected {
+    background: #FFCDD2;
+    color: #C63737;
+}
+
+.status-badge.status-pending {
+    background: #FEEDAF;
+    color: #8A5340;
+}
+
+@keyframes pulse {
+    0% {
+        background-color: rgba(165, 165, 165, 0.1)
+    }
+    50% {
+        background-color: rgba(165, 165, 165, 0.3)
+    }
+    100% {
+        background-color: rgba(165, 165, 165, 0.1)
+    }
+}
+
+.p-multiselect-representative-option {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.p-multiselect-representative-option img {
+    vertical-align: middle;
+    width: 24px;
+}
+
+.p-multiselect-representative-option span {
+    margin-top: .125rem;
+}
+
+.p-column-filter {
+    width: 100%;
+}
+
+.datatable-crud-demo .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 960px) {
+    .datatable-crud-demo .table-header {
+        align-items: flex-start;
+    }
+}
+
+.datatable-crud-demo .product-image {
+    width: 100px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.datatable-crud-demo .p-dialog .product-image {
+    width: 150px;
+    margin: 0 auto 2rem auto;
+    display: block;
+}
+
+.datatable-crud-demo .confirmation-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 960px) {
+    .datatable-crud-demo .p-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .datatable-crud-demo .p-toolbar .p-button {
+        margin-bottom: 0.25rem;
+    }
+
+    .datatable-crud-demo .table-header {
+        flex-direction: column;
+    }
+
+    .datatable-crud-demo .table-header .p-input-icon-left, .datatable-crud-demo .table-header input {
+        width: 100%;
+    }
+}
+
+#pr_id_3_content {
+    padding: 0 1.5rem 0rem 1.5rem;
+}
+
+#pr_id_2_content {
+    padding: 0 1.5rem 0rem 1.5rem;
+}

@@ -43,6 +43,12 @@ function Intro() {
         setIsOpen(false);
     }
 
+    const url = keycloak.createLoginUrl();
+
+    function handleLogin() {
+        window.location.href = url;
+    }
+
     return (
         <>
             <Modal
@@ -85,7 +91,7 @@ function Intro() {
 
 
                                 {!keycloak.authenticated && (
-                                    <a role="button" className="btn-get-started" onClick={keycloak.login}>
+                                    <a role="button" className="btn-get-started" onClick={handleLogin}>
                                         Get Started</a>
                                 )}
 

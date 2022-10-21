@@ -53,7 +53,24 @@ function NavBar({addSection}) {
             setIsHome(false);
         }
 
+        console.log(keycloak.token);
+
     }, [location]);
+
+    const url = keycloak.createLoginUrl();
+
+    function handleLogin() {
+        window.location.href = url;
+    }
+
+    // function profile() {
+    //     keycloak.loadUserProfile()
+    //         .then(function (profile) {
+    //             alert(JSON.stringify(profile, null, "  "))
+    //         }).catch(function () {
+    //         alert('Failed to load user profile');
+    //     });
+    // }
 
     return (
         <>
@@ -81,12 +98,19 @@ function NavBar({addSection}) {
 
                             {!keycloak.authenticated && (
                                 //TODO login btn on click resizes
-                                <li><a role='button' className="getstarted" onClick={keycloak.login}>Log In</a></li>
+                                <li><a role='button' className="getstarted" onClick={handleLogin}>Log
+                                    In</a></li>
                             )}
 
                             {!!keycloak.authenticated && (
-                                <li><a role="button" className="getstarted" onClick={keycloak.logout}>Log Out
-                                    ({keycloak.tokenParsed.preferred_username}) </a></li>
+                                <>
+                                    <li><a role="button" className="getstarted" onClick={keycloak.accountManagement}>Profile</a>
+                                    </li>
+                                    <li><NavLink to="/signingSessions">Signing Sessions</NavLink>
+                                    </li>
+                                    <li><a role="button" className="getstarted" onClick={keycloak.logout}>Log Out
+                                        ({keycloak.tokenParsed.preferred_username}) </a></li>
+                                </>
                             )}
 
 

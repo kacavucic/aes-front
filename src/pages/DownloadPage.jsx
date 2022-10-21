@@ -25,9 +25,9 @@ function DownloadPage({signingSessionId}) {
     function handleDownload() {
         let resType;
         if (errors == null) {
-            resType = '';
-        } else {
             resType = 'blob';
+        } else {
+            resType = 'json';
         }
 
         let config = {

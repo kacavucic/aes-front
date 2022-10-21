@@ -8,12 +8,15 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PrivateRoute from "./helpers/PrivateRoute";
 import InitiateSigningSessionPage from "./pages/InitiateSigningSessionPage";
+import SigningSessionsPage from "./pages/SigningSessionsPage";
 // import Loading from "./components/Loading";
 import SignPage from "./pages/SignPage";
 import DownloadPage from "./pages/DownloadPage";
 import ScrollToTop from "./helpers/ScrollToTop";
+import Loading from "./components/Loading";
 
 function App() {
+
 
     // function onKeycloakEvent(event, error) {
     //     console.log('onKeycloakEvent', event, error);
@@ -34,8 +37,6 @@ function App() {
     function addSection(section) {
         setSection(section);
     }
-
-    const Loading = () => <div>getting ready...</div>
 
     return (
         <ReactKeycloakProvider
@@ -59,6 +60,15 @@ function App() {
                                <PrivateRoute>
                                    <ScrollToTop>
                                        <InitiateSigningSessionPage addSigningSessionId={addSigningSessionId}/>
+                                   </ScrollToTop>
+                               </PrivateRoute>
+                           }
+                    />
+                    <Route path="/signingSessions"
+                           element={
+                               <PrivateRoute>
+                                   <ScrollToTop>
+                                       <SigningSessionsPage/>
                                    </ScrollToTop>
                                </PrivateRoute>
                            }
