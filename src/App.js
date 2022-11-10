@@ -11,9 +11,10 @@ import InitiateSigningSessionPage from "./pages/InitiateSigningSessionPage";
 import SigningSessionsPage from "./pages/SigningSessionsPage";
 // import Loading from "./components/Loading";
 import SignPage from "./pages/SignPage";
-import DownloadPage from "./pages/DownloadPage";
 import ScrollToTop from "./helpers/ScrollToTop";
 import Loading from "./components/Loading";
+import ApproveSigningPage from "./pages/ApproveSigningPage";
+import "./css/ToastStyle.css";
 
 function App() {
 
@@ -64,6 +65,27 @@ function App() {
                                </PrivateRoute>
                            }
                     />
+                    <Route path="/approveSigning"
+                           element={
+                               <PrivateRoute>
+                                   <ScrollToTop>
+                                       <ApproveSigningPage signingSessionId={signingSessionId} addSection={addSection}/>
+                                   </ScrollToTop>
+                               </PrivateRoute>
+                           }
+                    />
+                    <Route path="/sign" element={
+                        <PrivateRoute>
+                            <ScrollToTop>
+                                <SignPage signingSessionId={signingSessionId} addSection={addSection}/>
+                            </ScrollToTop>
+                        </PrivateRoute>}/>
+                    {/*<Route path="/download" element={*/}
+                    {/*    <PrivateRoute>*/}
+                    {/*        <ScrollToTop>*/}
+                    {/*            <DownloadPage signingSessionId={signingSessionId}/>*/}
+                    {/*        </ScrollToTop>*/}
+                    {/*    </PrivateRoute>}/>*/}
                     <Route path="/signingSessions"
                            element={
                                <PrivateRoute>
@@ -73,18 +95,6 @@ function App() {
                                </PrivateRoute>
                            }
                     />
-                    <Route path="/sign" element={
-                        <PrivateRoute>
-                            <ScrollToTop>
-                                <SignPage signingSessionId={signingSessionId}/>
-                            </ScrollToTop>
-                        </PrivateRoute>}/>
-                    <Route path="/download" element={
-                        <PrivateRoute>
-                            <ScrollToTop>
-                                <DownloadPage signingSessionId={signingSessionId}/>
-                            </ScrollToTop>
-                        </PrivateRoute>}/>
                 </Routes>
                 <Footer/>
             </BrowserRouter>

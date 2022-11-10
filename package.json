@@ -2,6 +2,7 @@
   "name": "aes-front",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
@@ -19,8 +20,10 @@
     "fs": "^0.0.1-security",
     "glightbox": "^3.2.0",
     "keycloak-js": "^19.0.1",
+    "otp-timer": "^1.1.5",
     "primeicons": "^6.0.1",
     "primereact": "^8.6.1",
+    "pspdfkit": "^2022.4.3",
     "qs": "^6.11.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
@@ -36,7 +39,9 @@
     "react-use-file-upload": "^0.9.5",
     "react-waypoint": "^10.3.0",
     "react-youtube": "^9.0.3",
+    "react18-input-otp": "^1.1.0",
     "remixicon": "^2.5.0",
+    "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

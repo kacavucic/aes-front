@@ -87,7 +87,7 @@ function SigningSessionsPage() {
         setSessions(_sessions);
         setDeleteSessionDialog(false);
         setSession(emptySession);
-        toast.current.show({severity: 'success', summary: 'Successful', detail: 'Signing Session Deleted', life: 3000});
+        toast.current.show({severity: 'success', summary: 'Successful', detail: 'Signing Session Deleted', life: 10000});
     }
 
     const confirmDeleteSelected = () => {
@@ -103,7 +103,7 @@ function SigningSessionsPage() {
             severity: 'success',
             summary: 'Successful',
             detail: 'Signing Sessions Deleted',
-            life: 3000
+            life: 10000
         });
     }
 
@@ -162,7 +162,6 @@ function SigningSessionsPage() {
 
         <>
             <main id="main">
-
                 <section id="breadcrumbs" className="breadcrumbs">
                     <div className="container">
                         <ol>
@@ -180,66 +179,73 @@ function SigningSessionsPage() {
                 <section className="inner-page">
                     <section id="contact" className="contact">
                         <div className="container" data-aos="zoom-in">
-                            <div className="row">
+                            <div className="row-col">
+                                <div className="col text-center text-lg-start">
+                                    <h3>Upload Document for Signing</h3>
+                                    <p className="file-form">
+                                        Start the signing process by uploading the document you want to sign. Only PDF
+                                        file format is supported. The maximum allowed file size for upload is 10MB.
+                                        Empty, malformed, or already signed files are not allowed.</p>
+                                    <div>
+                                        <div className="datatable-crud-demo">
+                                            <Toast ref={toast}/>
 
+                                            <div className="card" style={{padding: 2 + "rem", background: "white"}}>
+                                                <Toolbar className="mb-4" left={leftToolbarTemplate}/>
 
-                                <div className="datatable-crud-demo">
-                                    <Toast ref={toast}/>
+                                                <DataTable ref={dt} value={sessions} selection={selectedSessions}
+                                                           loading={loading}
 
-                                    <div className="card" style={{padding: 2 + "rem", background: "white"}}>
-                                        <Toolbar className="mb-4" left={leftToolbarTemplate}/>
+                                                           onSelectionChange={(e) => setSelectedSessions(e.value)}
+                                                           dataKey="id" paginator rows={10}
+                                                           rowsPerPageOptions={[5, 10, 25]}
+                                                           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                                                           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} signing sessions"
+                                                           globalFilter={globalFilter} header={header}
+                                                           globalFilterFields={["id", "documentName"]}
+                                                           responsiveLayout="scroll">
+                                                    <Column selectionMode="multiple" headerStyle={{width: '3rem'}}
+                                                            exportable={false}/>
+                                                    <Column field="id" header="ID" sortable
+                                                            style={{minWidth: '12rem'}}/>
+                                                    <Column field="documentName" header="Document" sortable
+                                                            style={{minWidth: '16rem'}}/>
 
-                                        <DataTable ref={dt} value={sessions} selection={selectedSessions}
-                                                   loading={loading}
+                                                    <Column field="addedOn" header="Added On" sortable
+                                                            style={{minWidth: '10rem'}}/>
+                                                    <Column field="attempts" header="Attempts" sortable/>
+                                                    <Column field="status" header="Status" body={statusBodyTemplate}
+                                                            sortable
+                                                            style={{minWidth: '12rem'}}/>
+                                                    <Column body={actionBodyTemplate} exportable={false}
+                                                            style={{minWidth: '8rem'}}/>
+                                                </DataTable>
+                                            </div>
 
-                                                   onSelectionChange={(e) => setSelectedSessions(e.value)}
-                                                   dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                                                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                                                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} signing sessions"
-                                                   globalFilter={globalFilter} header={header}
-                                                   globalFilterFields={["id", "documentName"]}
-                                                   responsiveLayout="scroll">
-                                            <Column selectionMode="multiple" headerStyle={{width: '3rem'}}
-                                                    exportable={false}/>
-                                            <Column field="id" header="ID" sortable
-                                                    style={{minWidth: '12rem'}}/>
-                                            <Column field="documentName" header="Document" sortable
-                                                    style={{minWidth: '16rem'}}/>
+                                            <Dialog visible={deleteSessionDialog} header="Confirm"
+                                                    modal
+                                                    footer={deleteSessionDialogFooter} onHide={hideDeleteSessionDialog}>
+                                                <div className="confirmation-content">
+                                                    <i className="pi pi-exclamation-triangle me-3"
+                                                       style={{fontSize: '2rem'}}/>
+                                                    {session &&
+                                                    <span>Are you sure you want to delete <b>{session.documentName}</b>?</span>}
+                                                </div>
+                                            </Dialog>
 
-                                            <Column field="addedOn" header="Added On" sortable
-                                                    style={{minWidth: '10rem'}}/>
-                                            <Column field="attempts" header="Attempts" sortable/>
-                                            <Column field="status" header="Status" body={statusBodyTemplate}
-                                                    sortable
-                                                    style={{minWidth: '12rem'}}/>
-                                            <Column body={actionBodyTemplate} exportable={false}
-                                                    style={{minWidth: '8rem'}}/>
-                                        </DataTable>
+                                            <Dialog visible={deleteSessionsDialog} header="Confirm"
+                                                    modal
+                                                    footer={deleteSessionsDialogFooter}
+                                                    onHide={hideDeleteSessionsDialog}>
+                                                <div className="confirmation-content">
+                                                    <i className="pi pi-exclamation-triangle me-3"
+                                                       style={{fontSize: '2rem'}}/>
+                                                    {session &&
+                                                    <span>Are you sure you want to delete the selected signing sessions?</span>}
+                                                </div>
+                                            </Dialog>
+                                        </div>
                                     </div>
-
-                                    <Dialog visible={deleteSessionDialog} header="Confirm"
-                                            modal
-                                            footer={deleteSessionDialogFooter} onHide={hideDeleteSessionDialog}>
-                                        <div className="confirmation-content">
-                                            <hr/>
-                                            <i className="pi pi-exclamation-triangle me-3" style={{fontSize: '2rem'}}/>
-                                            {session &&
-                                            <span>Are you sure you want to delete <b>{session.documentName}</b>?</span>}
-                                            <hr/>
-                                        </div>
-                                    </Dialog>
-
-                                    <Dialog visible={deleteSessionsDialog} header="Confirm"
-                                            modal
-                                            footer={deleteSessionsDialogFooter} onHide={hideDeleteSessionsDialog}>
-                                        <div className="confirmation-content">
-                                            <hr/>
-                                            <i className="pi pi-exclamation-triangle me-3" style={{fontSize: '2rem'}}/>
-                                            {session &&
-                                            <span>Are you sure you want to delete the selected signing sessions?</span>}
-                                            <hr/>
-                                        </div>
-                                    </Dialog>
                                 </div>
                             </div>
                         </div>

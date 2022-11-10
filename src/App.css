@@ -1866,16 +1866,16 @@ section {
 
 #file-button {
     margin-left: 10px;
-    background-color: transparent;
+    /*background-color: transparent; */
     font-family: "Jost", sans-serif;
     font-weight: 500;
-    font-size: 16px;
+    /*font-size: 16px;*/
     letter-spacing: 1px;
-    display: inline-block;
+    /*display: inline-block;*/
     border-radius: 50px;
-    transition: 0.5s;
-    color: #fff;
-    border: 1px solid #ced4da;
+    /*transition: 0.5s;*/
+    /*color: #fff;*/
+    /*border: 1px solid #ced4da;*/
 }
 
 #file-input {
@@ -1883,11 +1883,11 @@ section {
     background-color: transparent;
     font-family: "Jost", sans-serif;
     font-weight: 500;
-    font-size: 16px;
+    /*font-size: 16px;*/
     letter-spacing: 1px;
-    display: inline-block;
+    /*display: inline-block;*/
     border-radius: 50px;
-    transition: 0.5s;
+    /*transition: 0.5s;*/
     color: #fff;
 }
 
@@ -1921,4 +1921,372 @@ section {
     width: 36px;
     height: 36px;
     transition: 0.3s;
+}
+
+.react-component .react-pdf__message {
+    background: linear-gradient(125.75deg, white 0%, #dee4f0 33%, white 66%, #dee4f0 100%);
+    background-size: 200% 100%;
+    animation-name: loading-animate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    border-radius: 8px;
+    max-width: 816px;
+    width: 90vw;
+    padding-bottom: 1056px;
+    font-size: 0;
+}
+
+.react-pdf__Document {
+    border-radius: 8px;
+    max-width: 100%;
+    position: relative;
+    background-color: white;
+}
+
+.react-pdf__Document:hover .page-controls {
+    opacity: 1;
+}
+
+.react-pdf__Page {
+    max-width: 816px;
+    width: 90vw;
+}
+
+.react-pdf__Page.rendering {
+    position: absolute !important;
+    opacity: 0;
+    z-index: -1;
+}
+
+.react-pdf__Page.departuring {
+    opacity: 0.5;
+    transition: opacity ease-in-out 200ms;
+}
+
+.react-pdf__Page__svg {
+    width: auto !important;
+    height: auto !important;
+    border-radius: 8px;
+}
+
+.react-pdf__Page__svg:empty {
+    padding-bottom: 1056px;
+}
+
+.react-pdf__Page__svg svg {
+    border-radius: 8px;
+    max-width: 816px;
+    width: 90vw;
+    height: auto;
+    display: block;
+    background-color: white;
+}
+
+.page-controls {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    background: white;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity ease-in-out 0.2s;
+    box-shadow: 0 30px 40px 0 rgba(16, 36, 94, 0.2);
+    border-radius: 4px;
+}
+
+.page-controls span {
+    font: inherit;
+    font-size: 0.8em;
+    padding: 0 0.5em;
+}
+
+.page-controls button {
+    width: 44px;
+    height: 44px;
+    background: white;
+    border: 0;
+    font: inherit;
+    font-size: 0.8em;
+    border-radius: 4px;
+}
+
+.page-controls button:enabled:hover {
+    cursor: pointer;
+}
+
+.page-controls button:enabled:hover,
+.page-controls button:enabled:focus {
+    background-color: #e6e6e6;
+}
+
+.page-controls button:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.page-controls button:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.react-component {
+    width: calc(100% - 10%);
+    max-width: 1110px;
+    margin-top: calc(var(--component-height) / -2);
+    /*margin-bottom: 4em;*/
+    margin-bottom: 2em;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    font-size: 19px;
+}
+
+.react-component > * {
+    box-shadow: 0 30px 40px 0 rgba(16, 36, 94, 0.2);
+}
+
+
+@media screen and (min-width: 780px) {
+    .Showcase main section .richContent .illustration {
+        flex-basis: 300px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .Showcase--react-date-picker .react-component {
+        justify-content: flex-start;
+    }
+}
+
+
+@keyframes loading-animate {
+    from {
+        background-position-x: 0;
+    }
+    to {
+        background-position-x: 200%;
+    }
+}
+
+.pdf-preview .react-pdf__message {
+    /*display: none;*/
+}
+
+.pdf-preview .react-pdf__Page {
+    max-width: 200px;
+    width: 90vw;
+}
+
+.dialog-demo .p-button {
+    margin: 0 .5rem 0 0;
+    min-width: 10rem;
+}
+
+.dialog-demo p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.dialog-demo .p-dialog .p-button {
+    min-width: 6rem;
+}
+
+#otp_form .inputStyle {
+    width: 3rem !important;
+    height: 3rem;
+    margin: 0 1rem;
+    font-size: 2rem;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+
+    /*box-shadow: none;*/
+    /*border: 3px solid #31A3DA*/
+}
+
+#otp_form .inputStyle:disabled {
+    cursor: not-allowed;
+}
+
+@media only screen and (max-width: 678px) {
+
+    #otp_form label {
+        display: block;
+        float: left;
+        width: 120px;
+    }
+
+    #otp_form .card {
+        width: 100%;
+        min-width: 120px !important;
+        margin: 20px;
+    }
+}
+
+@media only screen and (max-width: 470px) {
+    #otp_form .margin-top--small .inputStyle {
+        width: 2rem !important;
+        height: 2rem;
+        margin: 0 5px;
+        font-size: 1rem;
+    }
+
+    #otp_form .card > form > label {
+        font-size: 1.2em !important;
+    }
+}
+
+#otp_form .card {
+    border-radius: 30px;
+    box-shadow: 1px 0px 12px 0px #d2dae3;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+
+    min-width: 360px;
+    padding: 2rem;
+
+}
+
+#otp_form .card > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#otp_form .card > form > label {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#otp_form input[type='number']::-webkit-inner-spin-button,
+#otp_form input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+#otp_form input[type='number'] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+#otp_form .btn-row {
+    display: flex;
+    flex-direction: row;
+}
+
+#otp_form .btn {
+    /*background-color: #3273dc;*/
+    border: none;
+    padding: 0.5rem 1rem;
+    /*color: white;*/
+    /*border-radius: 4px;*/
+    cursor: pointer;
+    margin: 1rem;
+}
+
+#otp_form .btn:disabled {
+    background-color: rgba(0, 0, 0, 0.4);
+    cursor: not-allowed;
+}
+
+#otp_form .margin-top--small {
+    margin-top: 1rem;
+    margin-bottom: -1rem;
+}
+
+#otp_form .margin-top--small > div {
+    flex-wrap: wrap;
+}
+
+#otp_form .margin-top--small > div > div {
+    margin-bottom: 1rem;
+}
+
+#otp_form .margin-top--medium {
+    margin-top: 1.5rem;
+}
+
+#otp_form .margin-top--large {
+    margin-top: 4rem;
+}
+
+#otp_form .error {
+    border: 1px solid red !important;
+}
+
+.p-tabview-nav {
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+}
+
+
+/* StepsDemo.css */
+
+#steps .p-steps .p-steps-item .p-menuitem-link {
+    background-color: transparent;
+}
+
+#steps .p-steps .p-steps-item.p-highlight .p-steps-title {
+    color: #37517e;
+}
+
+#steps .p-steps .p-steps-item .p-menuitem-link:not(.p-disabled):focus {
+    box-shadow: none;
+}
+
+@media screen and (max-width: 640px) {
+    .steps-demo .p-steps {
+        height: 350px;
+    }
+
+    .steps-demo .p-steps > ul {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item:before {
+        position: static;
+        left: auto;
+        top: auto;
+        margin-top: 0;
+        border-left: 1px solid var(--surface-d);
+        border-top: 0 none;
+        width: auto;
+        height: 100%;
+        margin-left: 1rem;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item .p-menuitem-link {
+        flex-direction: row;
+        overflow: visible;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item .p-menuitem-link .p-steps-title {
+        margin: 0 .5rem 0;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item:last-child {
+        flex-grow: 0;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item:last-child .p-menuitem-link {
+        padding: 0;
+    }
+
+    .steps-demo .p-steps > ul .p-steps-item:last-child:before {
+        display: none;
+    }
 }
