@@ -2290,3 +2290,9 @@ section {
         display: none;
     }
 }
+
+/* SpeedDialDemo.css */
+.speeddial-linear-demo .p-speeddial-direction-left {
+    right: 0;
+    top: calc(50% - 1.5rem);
+}

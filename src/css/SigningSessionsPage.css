@@ -12,9 +12,19 @@
     color: #256029;
 }
 
+.status-badge.status-pending {
+    background: #FEEDAF;
+    color: #8A5340;
+}
+
+.status-badge.status-inprogress {
+    background: rgba(105, 64, 138, 0.3);
+    color: #69408a;
+}
+
 .status-badge.status-canceled {
-    background: #FFCDD2;
-    color: #C63737;
+    background: rgba(100, 93, 93, 0.27);
+    color: #645d5d;
 }
 
 .status-badge.status-rejected {
@@ -22,10 +32,7 @@
     color: #C63737;
 }
 
-.status-badge.status-pending {
-    background: #FEEDAF;
-    color: #8A5340;
-}
+
 
 @keyframes pulse {
     0% {
