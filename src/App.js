@@ -77,26 +77,21 @@ function App() {
                     <Route path="/sign" element={
                         <PrivateRoute>
                             <ScrollToTop>
-                                <SignPage signingSessionId={signingSessionId} addSection={addSection}/>
+                                <SignPage signingSessionId={signingSessionId}/>
                             </ScrollToTop>
                         </PrivateRoute>}/>
-                    {/*<Route path="/download" element={*/}
-                    {/*    <PrivateRoute>*/}
-                    {/*        <ScrollToTop>*/}
-                    {/*            <DownloadPage signingSessionId={signingSessionId}/>*/}
-                    {/*        </ScrollToTop>*/}
-                    {/*    </PrivateRoute>}/>*/}
+
                     <Route path="/signingSessions"
                            element={
                                <PrivateRoute>
                                    <ScrollToTop>
-                                       <SigningSessionsPage/>
+                                       <SigningSessionsPage addSigningSessionId={addSigningSessionId}/>
                                    </ScrollToTop>
                                </PrivateRoute>
                            }
                     />
                 </Routes>
-                <Footer/>
+                <Footer addSection={addSection}/>
             </BrowserRouter>
         </ReactKeycloakProvider>
 

@@ -87,10 +87,10 @@ function NavBar({addSection}) {
                                 </NavLink>
                                 <ul>
                                     <li>
-                                        <a role="button" onClick={() => scrollto("#about")}>About Us</a>
+                                        <a role="button" onClick={() => scrollto("#about")}>About AES</a>
                                     </li>
-                                    <li><a role="button" onClick={() => scrollto("#services")}>Services</a></li>
-                                    <li><a role="button" onClick={() => scrollto("#cta")}>Call To Action</a></li>
+                                    <li><a role="button" onClick={() => scrollto("#services")}>Document Signing Process</a></li>
+                                    <li><a role="button" onClick={() => scrollto("#cta")}>Security Measures</a></li>
                                     <li><a role="button" onClick={() => scrollto("#faq")}>FAQ</a></li>
                                 </ul>
                             </li>
@@ -104,9 +104,10 @@ function NavBar({addSection}) {
 
                             {!!keycloak.authenticated && (
                                 <>
-                                    <li><a role="button" className="getstarted" onClick={keycloak.accountManagement}>Profile</a>
-                                    </li>
                                     <li><NavLink to="/signingSessions">Signing Sessions</NavLink>
+                                    </li>
+                                    <li><a role="button" className="getstarted"
+                                           onClick={keycloak.accountManagement}>Profile</a>
                                     </li>
                                     <li><a role="button" className="getstarted" onClick={keycloak.logout}>Log Out
                                         ({keycloak.tokenParsed.preferred_username}) </a></li>

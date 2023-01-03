@@ -1,5 +1,8 @@
 import React, {useEffect} from "react";
 import Intro from "../components/Intro";
+import {useKeycloak} from "@react-keycloak/web";
+import hero from "../assets/img/aes-img.svg";
+import ds from "../assets/img/ds.png"
 
 function HomePage({section, addSection}) {
 
@@ -34,6 +37,13 @@ function HomePage({section, addSection}) {
 
     }, []);
 
+    const {keycloak, initialized} = useKeycloak();
+    const url = keycloak.createLoginUrl();
+
+    function handleLogin() {
+        window.location.href = url;
+    }
+
     return (
         <>
             <Intro/>
@@ -43,38 +53,33 @@ function HomePage({section, addSection}) {
                     <div className="container" data-aos="fade-up">
 
                         <div className="section-title">
-                            <h2>About Us</h2>
+                            <h2>About AES</h2>
                         </div>
 
                         <div className="row content">
-                            <div className="col-lg-6">
+                            <div className="col-lg-12">
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore
-                                    magna aliqua.
+                                    AES is an electronic signature
+                                    solution that uses advanced electronic signature and allows users to manage the
+                                    document signing process. It can also be integrated within other
+                                    applications through the use of
+                                    its API. AES handles user verification
+                                    and incorporates necessary data into the signature in the document. advanced electronic signature is:
                                 </p>
                                 <ul>
-                                    <li><i className="ri-check-double-line"/> Ullamco laboris nisi ut aliquip ex ea
-                                        commodo consequat
+                                    <li><i className="ri-check-double-line"/> Uniquely linked to the signatory
                                     </li>
-                                    <li><i className="ri-check-double-line"/> Duis aute irure dolor in reprehenderit
-                                        in voluptate velit
+                                    <li><i className="ri-check-double-line"/> Capable of identifying the signatory
                                     </li>
-                                    <li><i className="ri-check-double-line"/> Ullamco laboris nisi ut aliquip ex ea
-                                        commodo consequat
+                                    <li><i className="ri-check-double-line"/>  Created using electronic signature creation data that the
+                                        signatory can, with a high level of confidence, use under his sole control
+                                    </li>
+                                    <li><i className="ri-check-double-line"/>  Linked to the data
+                                        signed therewith in such a way that any subsequent change in the data is detectable
                                     </li>
                                 </ul>
-                            </div>
-                            <div className="col-lg-6 pt-4 pt-lg-0">
-                                <p>
-                                    Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                    reprehenderit in voluptate
-                                    velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                    non proident, sunt in
-                                    culpa qui officia deserunt mollit anim id est laborum.
-                                </p>
                                 <a href="https://ec.europa.eu/digital-building-blocks/wikis/display/ESIGKB/What+are+the+levels,+simple,+advanced+and+qualified+of+electronic+signatures"
-                                   className="btn-learn-more">Learn More</a>
+                                   className="btn-learn-more float-end">Learn More</a>
                             </div>
                         </div>
 
@@ -84,49 +89,59 @@ function HomePage({section, addSection}) {
                     <div className="container" data-aos="fade-up">
 
                         <div className="section-title">
-                            <h2>Services</h2>
-                            <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum
-                                quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui
-                                impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+                            <h2>Document Signing process</h2>
                         </div>
 
                         <div className="row">
-                            <div className="col-xl-3 col-md-6 d-flex align-items-stretch" data-aos="zoom-in"
+                            <div className="col-xl-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in"
                                  data-aos-delay="100">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bxl-dribbble"/></div>
-                                    <h4><a href="/">Lorem Ipsum</a></h4>
-                                    <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
+                                    <div className="icon"><i className=""/></div>
+                                    <h4><span style={{
+                                        color: "#37517e",
+                                        fontWeight: 600,
+                                        fontSize: 24 + "px",
+                                        paddingRight: 10 + "px"
+                                    }}>1.</span><a href="/">Initiate Signing Session</a></h4>
+                                    <h5><a href="/">Upload Document for Signing</a></h5>
+                                    <p>Initiate the signing process by uploading the document you want to sign.</p>
                                 </div>
                             </div>
 
-                            <div className="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-md-0"
+                            <div className="col-xl-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0"
                                  data-aos="zoom-in" data-aos-delay="200">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bx-file"/></div>
-                                    <h4><a href="/">Sed ut perspici</a></h4>
-                                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
+                                    <div className="icon"><i className=""/></div>
+                                    <h4><span style={{
+                                        color: "#37517e",
+                                        fontWeight: 600,
+                                        fontSize: 24 + "px",
+                                        paddingRight: 10 + "px"
+                                    }}>2.</span><a href="/">Approve Signing</a></h4>
+                                    <h5><a href="/">Review Document Before Signing</a></h5>
+                                    <p>In order to start the signing
+                                        process you must first scroll through the whole
+                                        document and review its content before you give <i> AES </i> consent to
+                                        sign document on your behalf.</p>
                                 </div>
                             </div>
 
-                            <div className="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0"
+                            <div className="col-xl-4 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0"
                                  data-aos="zoom-in" data-aos-delay="300">
                                 <div className="icon-box">
-                                    <div className="icon"><i className="bx bx-tachometer"/></div>
-                                    <h4><a href="/">Magni Dolores</a></h4>
-                                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
+                                    <div className="icon"><i className=""/></div>
+                                    <h4><span style={{
+                                        color: "#37517e",
+                                        fontWeight: 600,
+                                        fontSize: 24 + "px",
+                                        paddingRight: 10 + "px"
+                                    }}>3.</span><a href="/">Sign Document</a></h4>
+                                    <h5><a href="/">Sign And Download Document</a></h5>
+                                    <p>An OTP has is sent to your email address. You must provide
+                                        valid OTP in order to
+                                        complete the document signing process. </p>
                                 </div>
                             </div>
-
-                            <div className="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0"
-                                 data-aos="zoom-in" data-aos-delay="400">
-                                <div className="icon-box">
-                                    <div className="icon"><i className="bx bx-layer"/></div>
-                                    <h4><a href="/">Nemo Enim</a></h4>
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
-                                </div>
-                            </div>
-
                         </div>
 
                     </div>
@@ -135,15 +150,36 @@ function HomePage({section, addSection}) {
                     <div className="container" data-aos="zoom-in">
 
                         <div className="row">
-                            <div className="col-lg-9 text-center text-lg-start">
-                                <h3>Call To Action</h3>
-                                <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                                    culpa
-                                    qui officia deserunt mollit anim id est laborum.</p>
-                            </div>
-                            <div className="col-lg-3 cta-btn-container text-center">
-                                <a className="cta-btn align-middle" href="/">Call To Action</a>
+                            <div className="col-lg-12 text-center text-lg-start">
+                                <h3>Security Measures</h3>
+                                <p> In addition to being legally binding, electronic signatures have in-built security
+                                    measures. AES’s electronic signatures:
+                                    <br/><br/>
+                                    <ul>
+                                        <li>
+                                            <b>Have bank-grade security</b>
+                                            <br/>
+                                            AES meets some of the most stringent
+                                            EU security standards. Each eSignature is unique, documentable,
+                                            encrypted, and
+                                            tamper-evident. Multi-faceted verification of signing events is guaranteed
+                                            to
+                                            ensure that the signatory can sign documents knowing his data is secure.
+                                        </li>
+                                        <br/>
+                                        <li>
+                                            <b>Have an audit trail</b>
+                                            <br/>
+                                            AES provides a complete and extensive audit
+                                            trail that serves as
+                                            third-party validation of transaction completion, including information such
+                                            as the
+                                            signer's email address, name, authentication method, IP address, time-stamp,
+                                            and
+                                            more.
+                                        </li>
+                                    </ul>
+                                </p>
                             </div>
                         </div>
 
@@ -154,9 +190,6 @@ function HomePage({section, addSection}) {
 
                         <div className="section-title">
                             <h2>Frequently Asked Questions</h2>
-                            <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum
-                                quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui
-                                impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
                         </div>
 
                         <div className="faq-list">
@@ -164,15 +197,20 @@ function HomePage({section, addSection}) {
                                 <li data-aos="fade-up" data-aos-delay="100">
                                     <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
                                                                                     className="collapse"
-                                                                                    data-bs-target="#faq-list-1">Non
-                                    consectetur a erat nam at lectus urna duis? <i
+                                                                                    data-bs-target="#faq-list-1">What is
+                                    an electronic signature? <i
                                         className="bx bx-chevron-down icon-show"/><i
                                         className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-1" className="collapse show" data-bs-parent=".faq-list">
                                         <p>
-                                            Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus
-                                            laoreet non curabitur gravida. Venenatis lectus magna fringilla urna
-                                            porttitor rhoncus dolor purus non.
+                                            An electronic signature is a data in electronic form which is attached to or
+                                            logically associated with other data in electronic form and which is used by
+                                            the signatory to sign, where the signatory is a natural person.
+                                            <br/><br/>
+                                            Like its handwritten counterpart in the offline world, an electronic
+                                            signature can be used, for instance, to electronically indicate that the
+                                            signatory has written the document, agreed with the content of the document,
+                                            or that the signatory was present as a witness.
                                         </p>
                                     </div>
                                 </li>
@@ -180,15 +218,30 @@ function HomePage({section, addSection}) {
                                 <li data-aos="fade-up" data-aos-delay="200">
                                     <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
                                                                                     data-bs-target="#faq-list-2"
-                                                                                    className="collapsed">Feugiat
-                                    scelerisque varius morbi enim nunc? <i className="bx bx-chevron-down icon-show"/><i
+                                                                                    className="collapsed">What is the
+                                    difference between an electronic signature and a digital signature?<i
+                                        className="bx bx-chevron-down icon-show"/><i
                                         className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-2" className="collapse" data-bs-parent=".faq-list">
                                         <p>
-                                            Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id
-                                            interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus
-                                            scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper
-                                            dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                                            An <b style={{color: "#47b2e4"}}>electronic signature</b> is a legal concept
+                                            that is defined by eIDAS
+                                            as <i> data in electronic form which is
+                                            attached to
+                                            or logically associated with other data in electronic form and which is used
+                                            by the signatory to sign </i> (eIDAS Article 3.10).
+                                            <br/><br/>
+                                            A <b style={{color: "#47b2e4"}}>digital signature</b>, on the other hand,
+                                            refers to a mathematical and
+                                            cryptographic concept that is widely used to provide concrete and practical
+                                            instances of electronic signature. The definition given by ETSI TR 119 100
+                                            is that of <i>data appended to, or a cryptographic transformation of a data
+                                            unit that allows a recipient of the data unit to prove the source and
+                                            integrity of the data unit and protect against forgery e.g. by the
+                                            recipient.</i>
+                                            <br/><br/>
+                                            These two concepts should be distinguished, as all electronic signatures are
+                                            not necessarily digital signatures.
                                         </p>
                                     </div>
                                 </li>
@@ -196,16 +249,76 @@ function HomePage({section, addSection}) {
                                 <li data-aos="fade-up" data-aos-delay="300">
                                     <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
                                                                                     data-bs-target="#faq-list-3"
-                                                                                    className="collapsed">Dolor sit
-                                    amet consectetur adipiscing elit? <i className="bx bx-chevron-down icon-show"/><i
+                                                                                    className="collapsed">What are the
+                                    levels (simple, advanced and qualified) of electronic signatures?<i
+                                        className="bx bx-chevron-down icon-show"/><i
                                         className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-3" className="collapse" data-bs-parent=".faq-list">
                                         <p>
-                                            Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci.
-                                            Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet
-                                            nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis
-                                            convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio
-                                            morbi quis
+                                            The eIDAS Regulation defines three levels of electronic signature: 'simple'
+                                            electronic signature, advanced electronic signature and qualified electronic
+                                            signature. The requirements of each level are built on the requirements of
+                                            the level below it, such that a qualified electronic signature meets the
+                                            most requirements and a 'simple' electronic signature the least.
+                                            <br/><br/>
+                                            <b style={{color: "#47b2e4"}}>'Simple' electronic signatures</b>
+                                            <br/>
+                                            An electronic signature is defined as "data in electronic form which is
+                                            attached to or logically associated with other data in electronic form and
+                                            which is used by the signatory to sign". Thus, something as simple as
+                                            writing your name under an e-mail might constitute an electronic signature.
+                                            <br/><br/>
+                                            <b style={{color: "#47b2e4"}}>Advanced electronic signatures (AdES)</b>
+                                            <br/>
+                                            An advanced electronic signature is an electronic signature which is
+                                            additionally:
+                                            <br/><br/>
+                                            <span style={{
+                                                color: "#47b2e4",
+                                                fontWeight: 1000,
+                                                marginRight: 10 + "px",
+                                                marginLeft: 10 + "px"
+                                            }}>&#8226;</span>uniquely linked to and
+                                            capable of identifying the signatory;<br/>
+                                            <span style={{
+                                                color: "#47b2e4",
+                                                fontWeight: 1000,
+                                                marginRight: 10 + "px",
+                                                marginLeft: 10 + "px"
+                                            }}>&#8226;</span>created in a way that allows
+                                            the signatory to retain control;<br/>
+                                            <span style={{
+                                                color: "#47b2e4",
+                                                fontWeight: 1000,
+                                                marginRight: 10 + "px",
+                                                marginLeft: 10 + "px"
+                                            }}>&#8226;</span>linked to the document in a
+                                            way that any subsequent change of the data is
+                                            detectable.
+                                            <br/><br/>
+                                            The most commonly used technology able to provide these requirements relies
+                                            on the use of a public-key infrastructure (PKI), which involves the use of
+                                            certificates and cryptographic keys.
+                                            <br/><br/>
+                                            <b style={{color: "#47b2e4"}}> Qualified electronic signatures (QES)</b>
+                                            <br/>
+                                            A qualified electronic signature is an advanced electronic signature which
+                                            is additionally:
+                                            <br/><br/>
+                                            <span style={{
+                                                color: "#47b2e4",
+                                                fontWeight: 1000,
+                                                marginRight: 10 + "px",
+                                                marginLeft: 10 + "px"
+                                            }}>&#8226;</span>created by a qualified
+                                            signature creation device (QSCD);<br/>
+                                            <span style={{
+                                                color: "#47b2e4",
+                                                fontWeight: 1000,
+                                                marginRight: 10 + "px",
+                                                marginLeft: 10 + "px"
+                                            }}>&#8226;</span>and is based on a qualified
+                                            certificate for electronic signatures.
                                         </p>
                                     </div>
                                 </li>
@@ -213,16 +326,23 @@ function HomePage({section, addSection}) {
                                 <li data-aos="fade-up" data-aos-delay="400">
                                     <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
                                                                                     data-bs-target="#faq-list-4"
-                                                                                    className="collapsed">Tempus quam
-                                    pellentesque nec nam aliquam sem et tortor consequat? <i
+                                                                                    className="collapsed"> What are the
+                                    legal effects of an electronic signature?<i
                                         className="bx bx-chevron-down icon-show"/><i
                                         className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-4" className="collapse" data-bs-parent=".faq-list">
                                         <p>
-                                            Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim
-                                            suspendisse in est ante in. Nunc vel risus commodo viverra maecenas
-                                            accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis
-                                            blandit turpis cursus in.
+                                            Across all EU Member States, the legal effects of electronic signatures are
+                                            laid down in Article 25 of eIDAS.
+                                            <br/><br/>
+                                            An electronic signature (either simple, advanced or qualified) shall not be
+                                            denied legal effect and admissibility as evidence in legal proceedings
+                                            solely on the grounds that it is in an electronic form or that it does not
+                                            meet the requirements for qualified electronic signatures.
+                                            <br/><br/>
+                                            Regarding qualified electronic signatures, they explicitly have the
+                                            equivalent legal effect of handwritten signatures across all EU Member
+                                            States.
                                         </p>
                                     </div>
                                 </li>
@@ -230,16 +350,22 @@ function HomePage({section, addSection}) {
                                 <li data-aos="fade-up" data-aos-delay="500">
                                     <i className="bx bx-help-circle icon-help"/> <a data-bs-toggle="collapse"
                                                                                     data-bs-target="#faq-list-5"
-                                                                                    className="collapsed">Tortor
-                                    vitae purus faucibus ornare. Varius vel pharetra vel turpis nunc eget lorem
-                                    dolor? <i className="bx bx-chevron-down icon-show"/><i
+                                                                                    className="collapsed">What are
+                                    electronic signatures used for? <i className="bx bx-chevron-down icon-show"/><i
                                         className="bx bx-chevron-up icon-close"/></a>
                                     <div id="faq-list-5" className="collapse" data-bs-parent=".faq-list">
                                         <p>
-                                            Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae
-                                            ultricies leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est
-                                            sit amet. Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus
-                                            vulputate eu scelerisque.
+                                            Electronic signatures are used for many kinds of documents and transactions,
+                                            both for <b style={{color: "#47b2e4"}}>personal</b> and <b
+                                            style={{color: "#47b2e4"}}>business use</b>. Some examples include
+                                            contracts and
+                                            agreements, loans and leases, forms, orders, and more. Businesses in nearly
+                                            every sector can benefit from using e-signatures and they are often used for
+                                            financial services agreements, HR documents.,healthcare forms,
+                                            non-disclosure agreements and government services. Many organisations
+                                            implement electronic signatures because it offers several benefits including
+                                            increased flexibility. It allows employees and customers to sign documents
+                                            remotely, streamlines productivity, improves experiences and reduces risks.
                                         </p>
                                     </div>
                                 </li>

@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import ReactPlayer from "react-player";
-import hero from "../assets/img/hero-img.png";
+import hero from "../assets/img/aes-img.svg";
 import React, {useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
 import {NavLink} from "react-router-dom";
@@ -86,7 +86,7 @@ function Intro() {
                             className="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
                             data-aos="fade-up" data-aos-delay="200">
                             <h1>Advanced Electronic Signature</h1>
-                            <h2>Electronically signs PDF documents with an advanced electronic signature</h2>
+                            <h2>Digitally signs PDF documents with an advanced electronic signature</h2>
                             <div className="d-flex justify-content-center justify-content-lg-start">
 
 

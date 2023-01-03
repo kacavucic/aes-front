@@ -11,22 +11,23 @@ import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.css';
 import {Menu} from 'primereact/menu';
+import {FilterMatchMode, FilterOperator} from "primereact/api";
+import {useNavigate} from "react-router-dom";
 
 
-function SigningSessionsPage() {
+function SigningSessionsPage({addSigningSessionId}) {
     const {keycloak, initialized} = useKeycloak();
     const [loading, setLoading] = useState(true);
 
 
     const [sessions, setSessions] = useState(null);
-    const [selectedSessions, setSelectedSessions] = useState(null);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
 
     // TODO empty message no records found
 
-    useEffect(() => {
+    function getAllSigningSessions() {
         var config = {
             method: 'get',
             url: 'http://localhost:8081/v1/aes/signingSessions',
@@ -37,13 +38,34 @@ function SigningSessionsPage() {
 
         axios(config)
             .then(function (response) {
+                setErrors(null);
                 console.log(JSON.stringify(response.data));
                 setSessions(response.data.signingSessions);
                 setLoading(false);
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error.message);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
             });
+    }
+
+    useEffect(() => {
+        getAllSigningSessions();
     }, []);
 
 
@@ -52,27 +74,37 @@ function SigningSessionsPage() {
             className={`status-badge status-${rowData.status.toLowerCase().replace(/\s+/g, '')}`}>{rowData.status}</span>;
     }
 
-    const [startDisabled, setStartDisabled] = useState(false);
+    let emptySession = {
+        documentName: null,
+        addedOn: null,
+        suspendedUntil: null,
+        status: null,
+        id: null,
+    };
+    const [session, setSession] = useState(emptySession);
+    const [approveDisabled, setApproveDisabled] = useState(false);
     const [cancelDisabled, setCancelDisabled] = useState(false);
     const [signDisabled, setSignDisabled] = useState(false);
 
     function prepareMenu(rowData) {
-        var status = rowData.status.toLowerCase().replace(/\s+/g, '');
-        var consent = rowData.consent;
+        setSession({...rowData});
 
-        if (status !== "pending") {
-            setStartDisabled(true);
+        var status = rowData.status.toLowerCase().replace(/\s+/g, '');
+
+        if (status !== "pending" && status !== "canceled") {
+            setApproveDisabled(true);
 
         } else {
-            setStartDisabled(false);
+            setApproveDisabled(false);
         }
 
-        if (status !== "pending" && status !== "inprogress") {
+        if (status !== "pending") {
             setCancelDisabled(true);
 
         } else {
             setCancelDisabled(false);
         }
+
         if (status !== "inprogress") {
             setSignDisabled(true);
 
@@ -80,44 +112,158 @@ function SigningSessionsPage() {
             setSignDisabled(false);
         }
 
-        if (status === "canceled") {
-            if (consent === true) {
-                setSignDisabled(false);
-            } else {
-                setSignDisabled(true);
-            }
-
-            if (consent === false) {
-                setStartDisabled(false);
-            } else {
-                setStartDisabled(true);
-            }
-        }
     }
 
     function toggleMenu(event) {
         menu.current.toggle(event);
     }
 
+    const [errors, setErrors] = useState(null);
+    const getErrorView = () => {
+        toast.current.show({
+            severity: 'error',
+            summary: 'Error Message',
+            detail: <p style={{color: "#ff5757"}}>{errors}</p>,
+            life: 10000
+        });
+        setErrors(null);
+    }
+    let navigate = useNavigate();
     const menu = useRef(null);
+
+    const findIndexById = (id) => {
+        let index = -1;
+        for (let i = 0; i < sessions.length; i++) {
+            if (sessions[i].id === id) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+    function cancelSigningSession(signingSession) {
+
+        var config = {
+            method: 'put',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSession.id + '/cancel',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token,
+            }
+        };
+
+        axios(config)
+            .then(function (response) {
+                setErrors(null);
+                console.log(JSON.stringify(response.data));
+
+                let _sessions = [...sessions];
+                let _session = {...session, status: "Canceled"};
+                if (session.id) {
+                    const index = findIndexById(signingSession.id);
+                    _sessions[index] = _session;
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Success Message',
+                        detail: "You have successfully canceled document " + session.documentName + ".",
+                        life: 10000
+                    });
+                }
+
+
+                setSessions(_sessions);
+                setSession(emptySession);
+
+
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error.message);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
+            });
+    }
+
+    function reviewSigningSession(signingSession) {
+        var config = {
+            method: 'put',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSession.id + '/review',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token,
+            }
+        };
+
+        axios(config)
+            .then(function (response) {
+                setErrors(null);
+                console.log(JSON.stringify(response.data));
+                addSigningSessionId(signingSession.id);
+                navigate("/approveSigning");
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error.message);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
+            });
+    }
+
     const items = [
         {
             label: 'Actions',
             items: [
                 {
-                    label: 'Start',
+                    label: 'Review',
                     icon: 'pi pi-refresh',
-                    disabled: startDisabled
+                    disabled: approveDisabled,
+                    command: () => {
+                        reviewSigningSession(session);
+                    }
                 },
                 {
                     label: 'Cancel',
                     icon: 'pi pi-times',
-                    disabled: cancelDisabled
+                    disabled: cancelDisabled,
+                    command: () => {
+                        cancelSigningSession(session);
+                    }
+
                 },
                 {
                     label: 'Sign',
                     icon: 'pi pi-pencil',
-                    disabled: signDisabled
+                    disabled: signDisabled,
+                    command: () => {
+                        addSigningSessionId(session.id);
+                        navigate("/sign");
+                    }
                 }
             ]
         },
@@ -139,12 +285,35 @@ function SigningSessionsPage() {
         );
     }
 
+    const [filters, setFilters] = useState({
+        'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
+        'addedOn': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]},
+        'suspendedUntil': {
+            operator: FilterOperator.AND,
+            constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]
+        },
+
+    });
+
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+    const onGlobalFilterChange = (e) => {
+        const value = e.target.value;
+        let _filters = {...filters};
+        _filters['global'].value = value;
+
+        setFilters(_filters);
+        setGlobalFilterValue(value);
+    }
+
+
     const header = (
         <div className="table-header">
             <h5 className="mx-0 my-1">Manage Signing Sessions</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search"/>
-                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..."/>
+                <InputText type="search" value={globalFilterValue} onChange={onGlobalFilterChange}
+                           placeholder="Keyword Search"/>
             </span>
         </div>
     );
@@ -174,7 +343,7 @@ function SigningSessionsPage() {
     }
     const suspendedUntilBodyTemplate = (rowData) => {
         if (Date.now() > rowData.suspendedUntil * 1000) {
-            return <text>/</text>
+            return <div>/</div>;
         } else {
             var suspendedUntil = new Date(rowData.suspendedUntil * 1000);
             return formatSuspendedUntil(suspendedUntil);
@@ -185,6 +354,8 @@ function SigningSessionsPage() {
     return (
 
         <>
+            {errors ? getErrorView() : <></>}
+            <Toast ref={toast}/>
             <main id="main">
                 <section className="inner-page">
                     <section id="contact" className="contact" style={{padding: 100 + "px " + 0 + "px"}}>
@@ -194,7 +365,8 @@ function SigningSessionsPage() {
                                 <div className="col text-center text-lg-start">
                                     <h3>Signing Sessions</h3>
                                     <p className="file-form">
-                                        Start the signing process by uploading the document you want to sign. Only PDF
+                                        Initiate the signing process by uploading the document you want to sign. Only
+                                        PDF
                                         file format is supported. The maximum allowed file size for upload is 10MB.
                                         Empty, malformed, or already signed files are not allowed.</p>
                                     <div>
@@ -202,18 +374,19 @@ function SigningSessionsPage() {
                                             <Toast ref={toast}/>
 
                                             <div className="card" style={{padding: 2 + "rem", background: "white"}}>
-                                                <DataTable ref={dt} value={sessions} selection={selectedSessions}
+                                                <DataTable ref={dt} value={sessions}
+                                                           filters={filters} filterDisplay="menu"
+                                                           rowHover
                                                            loading={loading}
                                                            sortField="addedOn" sortOrder={-1}
-                                                           onSelectionChange={(e) => setSelectedSessions(e.value)}
                                                            dataKey="id" paginator rows={10}
                                                            rowsPerPageOptions={[5, 10, 25]}
                                                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                                                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} signing sessions"
                                                            globalFilter={globalFilter} header={header}
-                                                           globalFilterFields={["id", "documentName"]}
+                                                           globalFilterFields={["id", "documentName", "addedOn", "suspendedUntil", "status"]}
                                                            responsiveLayout="scroll"
-                                                           emptyMessage="No data."
+                                                           emptyMessage="No signing sessions found."
                                                 >
                                                     {/*<Column field="id" header="ID"/>*/}
                                                     <Column field="documentName" header="Document" sortable/>

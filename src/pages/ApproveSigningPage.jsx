@@ -9,6 +9,7 @@ import {Checkbox} from "primereact/checkbox";
 import LoadingSpinner from "../components/LoadingSpinner";
 import {Dialog} from "primereact/dialog";
 import {Steps} from "primereact/steps";
+import {Chip} from "primereact/chip";
 
 
 function ApproveSigningPage({signingSessionId, addSection}) {
@@ -31,16 +32,62 @@ function ApproveSigningPage({signingSessionId, addSection}) {
     const [showDialog, setShowDialog] = useState(false);
 
     let navigate = useNavigate();
+    const [signingSession, setSigningSession] = useState({
+        signingSession: false,
+        documentName: null,
+        status: null
+    });
 
     useEffect(() => {
-        showDocument(signingSessionId);
+        getSigningSession();
     }, []);
 
+    function getSigningSession() {
 
-    function showDocument(signingSessionId) {
+        var config = {
+            method: 'get',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId,
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token,
+            }
+        };
+
+        axios(config)
+            .then(function (response) {
+                console.log(JSON.stringify(response.data));
+                setSigningSession({
+                    documentName: response.data.documentName,
+                    status: response.data.status,
+                    signingSession: true
+                })
+                showDocument(response.data.id);
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    setErrors(error.response.data.errors);
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error.message);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
+            });
+
+    }
+
+    function showDocument(id) {
         let config = {
             method: 'get',
-            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/document',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + id + '/document',
 
             responseType: 'arraybuffer',
             headers: {
@@ -111,14 +158,14 @@ function ApproveSigningPage({signingSessionId, addSection}) {
         scrollToTop();
     }
 
-    function startSigning() {
+    function approveSigning() {
         var data = JSON.stringify({
             "consent": checked
         });
 
         var config = {
             method: 'put',
-            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/start',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/approve',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,
                 'Content-Type': 'application/json'
@@ -278,7 +325,8 @@ function ApproveSigningPage({signingSessionId, addSection}) {
             <Toast ref={toast}/>
             <Dialog className="dialog-demo" header="Canceled" visible={showDialog}
                     style={{width: '50vw'}} footer={renderFooter} onHide={onHide}>
-                <p>You have successfully canceled current signing session. You can upload a new document for signing or
+                <p>You have successfully canceled signing session for document <b>{signingSession.documentName}</b>. You
+                    can upload a new document for signing or
                     continue the signing process for this
                     document anytime on <i> Signing Sessions</i> page.</p>
             </Dialog>
@@ -295,7 +343,19 @@ function ApproveSigningPage({signingSessionId, addSection}) {
                         <div className="container" data-aos="zoom-in">
                             <div className="row">
                                 <div className="col text-center text-lg-start">
-                                    <h3>Review Document Before Signing</h3>
+                                    <div className="row">
+                                        <div className="col">
+                                            <h3>Review Document Before Signing</h3>
+
+                                        </div>
+                                        <div className="col text-end">
+                                            {signingSession.signingSession ? <Chip label={signingSession.documentName}
+                                                                                   icon="pi pi-file-pdf"
+                                                                                   className="mr-2 mb-2"/> : <></>}
+
+                                        </div>
+                                    </div>
+
                                     <p className="file-form">
                                         Previously uploaded document is displayed in the WYSIWYS (<i>What You See Is
                                         What
@@ -309,8 +369,9 @@ function ApproveSigningPage({signingSessionId, addSection}) {
                                         In order to start the signing process you must first scroll through the whole
                                         document and review its content before WYSIWYS activates a
                                         checkbox which you should
-                                        tick in order to give the consent for document signing. By clicking the <i>Start
-                                        Signing</i> button you start the signing process.
+                                        tick in order to give the consent for document signing. By clicking the <i>Approve
+                                        Signing</i> button you give <i> AES </i> consent to
+                                        sign document on your behalf.
                                     </p>
                                     {doc ? <>
                                             <div className="react-component">
@@ -390,7 +451,7 @@ function ApproveSigningPage({signingSessionId, addSection}) {
                                                                 <Button label="Approve"
                                                                         disabled={!checked}
                                                                         className="p-button-rounded p-button-success float-end"
-                                                                        onClick={startSigning}/>
+                                                                        onClick={approveSigning}/>
                                                             </div>
                                                         </div>
                                                     </div>

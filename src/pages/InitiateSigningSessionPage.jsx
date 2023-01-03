@@ -196,7 +196,7 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
                                 <div className="col text-center text-lg-start">
                                     <h3>Upload Document for Signing</h3>
                                     <p className="file-form">
-                                        Start the signing process by uploading the document you want to sign. Only PDF
+                                        Initiate the signing process by uploading the document you want to sign. Only PDF
                                         file format is supported. The maximum allowed file size for upload is 10MB.
                                         Empty, malformed, or already signed files are not allowed.</p>
                                     <div>
