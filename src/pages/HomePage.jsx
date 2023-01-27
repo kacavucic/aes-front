@@ -137,8 +137,8 @@ function HomePage({section, addSection}) {
                                         paddingRight: 10 + "px"
                                     }}>3.</span><a href="/">Sign Document</a></h4>
                                     <h5><a href="/">Sign And Download Document</a></h5>
-                                    <p>An OTP has is sent to your email address. You must provide
-                                        valid OTP in order to
+                                    <p>Code has is sent to your mobile phone. You must provide
+                                        valid code in order to
                                         complete the document signing process. </p>
                                 </div>
                             </div>

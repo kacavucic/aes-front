@@ -28,6 +28,7 @@ function ApproveSigningPage({signingSessionId, addSection}) {
 
     const [hasRead, setHasRead] = useState(false);
     const [checked, setChecked] = useState(false);
+    const [checked2, setChecked2] = useState(false);
 
     const [showDialog, setShowDialog] = useState(false);
 
@@ -56,7 +57,7 @@ function ApproveSigningPage({signingSessionId, addSection}) {
             .then(function (response) {
                 console.log(JSON.stringify(response.data));
                 setSigningSession({
-                    documentName: response.data.documentName,
+                    documentName: response.data.document.fileName,
                     status: response.data.status,
                     signingSession: true
                 })
@@ -64,7 +65,12 @@ function ApproveSigningPage({signingSessionId, addSection}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -87,7 +93,7 @@ function ApproveSigningPage({signingSessionId, addSection}) {
     function showDocument(id) {
         let config = {
             method: 'get',
-            url: 'http://localhost:8081/v1/aes/signingSessions/' + id + '/document',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + id + '/unsignedDocument',
 
             responseType: 'arraybuffer',
             headers: {
@@ -101,8 +107,15 @@ function ApproveSigningPage({signingSessionId, addSection}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    let arrayBufferConverted = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)));
-                    setErrors(arrayBufferConverted.errors);
+                    let arrayBufferConverted;
+                    if (error.response.data.subErrors == null) {
+                        arrayBufferConverted = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)));
+                        setErrors(arrayBufferConverted.message);
+                    } else {
+                        arrayBufferConverted = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)));
+                        const messages = arrayBufferConverted.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(arrayBufferConverted));
@@ -160,7 +173,7 @@ function ApproveSigningPage({signingSessionId, addSection}) {
 
     function approveSigning() {
         var data = JSON.stringify({
-            "consent": checked
+            "consent": checked && checked2
         });
 
         var config = {
@@ -181,7 +194,12 @@ function ApproveSigningPage({signingSessionId, addSection}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -217,7 +235,12 @@ function ApproveSigningPage({signingSessionId, addSection}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -410,13 +433,13 @@ function ApproveSigningPage({signingSessionId, addSection}) {
                                             <div className="container-fluid" style={{maxWidth: 816 + "px"}}>
                                                 <div className="row">
                                                     <div className="col-md-12">
-                                                        <div className="row field-checkbox">
+                                                        <div id="cb1" className="row field-checkbox">
                                                             <div className="col-auto">
                                                                 <Checkbox inputId="binary" checked={checked}
                                                                           disabled={!hasRead}
                                                                           onChange={e => setChecked(e.checked)}/>
                                                             </div>
-                                                            <div className="col-md-11">
+                                                            <div className="col-md-11 mb-4">
                                                                 <label className="form-check-label"
                                                                        style={hasRead ? {
                                                                            color: "white",
@@ -429,12 +452,32 @@ function ApproveSigningPage({signingSessionId, addSection}) {
                                                                        }}
                                                                        htmlFor="binary">I
                                                                     declare
-                                                                    that I have read the whole document and I give my
-                                                                    consent
-                                                                    to <i>AES</i> to sign
-                                                                    this
-                                                                    document on my
-                                                                    behalf.</label>
+                                                                    that I have read the whole document.
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="cb2" className="row field-checkbox">
+                                                            <div className="col-auto">
+                                                                <Checkbox inputId="binary2" checked={checked2}
+                                                                          disabled={!hasRead}
+                                                                          onChange={e => setChecked2(e.checked)}/>
+                                                            </div>
+                                                            <div className="col-md-11">
+                                                                <label className="form-check-label"
+                                                                       style={hasRead ? {
+                                                                           color: "white",
+                                                                           textAlign: "justify",
+                                                                           fontSize: 17 + "px"
+                                                                       } : {
+                                                                           color: "grey",
+                                                                           textAlign: "justify",
+                                                                           fontSize: 17 + "px"
+                                                                       }}
+                                                                       htmlFor="binary2">I give my consent to <i>AES</i> to
+                                                                    issue me an
+                                                                    one-time certificate to electronically sign a document
+                                                                    by entering the code that will arrive via SMS
+                                                                    message.</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -449,7 +492,7 @@ function ApproveSigningPage({signingSessionId, addSection}) {
                                                             </div>
                                                             <div className="offset-md-8 col-md-2 d-grid">
                                                                 <Button label="Approve"
-                                                                        disabled={!checked}
+                                                                        disabled={!(checked && checked2)}
                                                                         className="p-button-rounded p-button-success float-end"
                                                                         onClick={approveSigning}/>
                                                             </div>

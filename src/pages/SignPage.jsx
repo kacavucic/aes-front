@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useKeycloak} from "@react-keycloak/web";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {Button} from "primereact/button";
 import axios from "axios";
 import {Toast} from "primereact/toast";
@@ -9,8 +9,9 @@ import OtpInput from "react18-input-otp";
 import {saveAs} from 'file-saver';
 import {Steps} from "primereact/steps";
 import {Chip} from "primereact/chip";
+import {Dialog} from "primereact/dialog";
 
-function SignPage({signingSessionId}) {
+function SignPage({signingSessionId, addSection}) {
 
     const {keycloak, initialized} = useKeycloak();
     const [errors, setErrors] = useState(null)
@@ -18,13 +19,13 @@ function SignPage({signingSessionId}) {
     let navigate = useNavigate();
     const toast = useRef(null);
 
-    const [otp, setOtp] = useState('');
-    const numInputs = 6;
+    const [code, setCode] = useState('');
+    const numInputs = 7;
 
     const [signingSession, setSigningSession] = useState({
         signingSession: false,
         documentName: null,
-        otpAttempts: 0,
+        resendAttempts: 0,
         status: null
     });
 
@@ -42,15 +43,20 @@ function SignPage({signingSessionId}) {
             .then(function (response) {
                 console.log(JSON.stringify(response.data));
                 setSigningSession({
-                    documentName: response.data.documentName,
-                    otpAttempts: response.data.otpAttempts,
+                    documentName: response.data.document.fileName,
+                    resendAttempts: response.data.resendAttempts,
                     status: response.data.status,
                     signingSession: true
                 })
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -68,15 +74,16 @@ function SignPage({signingSessionId}) {
                 }
             });
 
+
     }
 
     useEffect(() => {
         getSigningSession();
     }, []);
 
-    const handleOtpChange = (otp) => {
+    const handleCodeChange = (code) => {
         setErrors(null);
-        setOtp(otp);
+        setCode(code);
     };
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -85,11 +92,11 @@ function SignPage({signingSessionId}) {
         e.preventDefault();
 
         let data = JSON.stringify({
-            "otp": otp
+            "code": code
         });
 
         let config = {
-            method: 'post',
+            method: 'put',
             url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/sign',
             headers: {
                 'Content-Type': 'application/json',
@@ -106,7 +113,7 @@ function SignPage({signingSessionId}) {
                 toast.current.show({
                     severity: 'success',
                     summary: 'Success Message',
-                    detail: response.data.confirmationMessage,
+                    detail: 'Document ' + response.data.document.fileName + ' has been successfully signed',
                     life: 10000
                 });
                 setDownloadDisabled(false);
@@ -114,8 +121,14 @@ function SignPage({signingSessionId}) {
                 setSignDisabled(true);
             })
             .catch(function (error) {
+                console.log(error);
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -138,7 +151,7 @@ function SignPage({signingSessionId}) {
 
         var config = {
             method: 'put',
-            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/resendOTP',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/resendCode',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,
             }
@@ -147,19 +160,24 @@ function SignPage({signingSessionId}) {
         axios(config)
             .then(function (response) {
                 setErrors(null);
-                setSigningSession(signingSession => ({...signingSession, otpAttempts: response.data.otpAttempts}))
+                setSigningSession(signingSession => ({...signingSession, resendAttempts: response.data.resendAttempts}))
                 toast.current.show({
                     severity: 'success',
                     summary: 'Success Message',
                     detail:
-                        <span>An OTP code has been sent to<b>&nbsp;{keycloak.tokenParsed.preferred_username}</b></span>,
+                        <span>Code has been sent to<b>&nbsp;{keycloak.tokenParsed.mobile}</b></span>,
                     life: 10000
                 });
                 console.log(JSON.stringify(response.data));
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -204,7 +222,7 @@ function SignPage({signingSessionId}) {
     function handleDownload() {
         let config = {
             method: 'get',
-            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/document',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/signedDocument',
 
             responseType: 'arraybuffer',
             headers: {
@@ -229,6 +247,16 @@ function SignPage({signingSessionId}) {
             })
             .catch(function (error) {
                 if (error.response) {
+
+                    if (error.response.data.subErrors == null) {
+                        let arrayBufferConverted = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)));
+                        setErrors(arrayBufferConverted.message);
+                    } else {
+                        let arrayBufferConverted = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)));
+                        const messages = arrayBufferConverted.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
+
                     let arrayBufferConverted = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)));
                     setErrors(arrayBufferConverted.errors);
                     // The client was given an error response (5xx, 4xx)
@@ -252,7 +280,7 @@ function SignPage({signingSessionId}) {
     const [downloadDisabled, setDownloadDisabled] = useState(true);
     const [signDisabled, setSignDisabled] = useState(false);
 
-    const maxOtpAttempts = 3;
+    const maxResendAttempts = 3;
 
     const items = [
         {
@@ -274,11 +302,107 @@ function SignPage({signingSessionId}) {
             }
         }
     ];
+    const [showDialog, setShowDialog] = useState(false);
+
+    function cancelSigningSession() {
+        var config = {
+            method: 'put',
+            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSessionId + '/cancel',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token,
+            }
+        };
+
+        axios(config)
+            .then(function (response) {
+                setErrors(null);
+                console.log(JSON.stringify(response.data));
+                setShowDialog(true);
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
+                    // The client was given an error response (5xx, 4xx)
+                    console.log("Response Error: " + JSON.stringify(error));
+                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
+                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
+                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
+                } else if (error.request) {
+                    setErrors(error.request);
+                    // The client never received a response, and the request never left
+                    console.log("Request Error")
+                    console.log(error.request);
+                } else {
+                    setErrors(error.message);
+                    // Anything else
+                    console.log('Error', error.message);
+                }
+            });
+    }
+
+    function navigateToSigningSessionsPage() {
+        navigate("/signingSessions")
+    }
+
+    const select = (el, all = false) => {
+        el = el.trim()
+        if (all) {
+            return [...document.querySelectorAll(el)]
+        } else {
+            return document.querySelector(el)
+        }
+    }
+
+    const location = useLocation();
+    const scrollto = (el) => {
+        if (location.pathname !== "/") {
+            addSection(el);
+            navigate("/");
+            return;
+        }
+        console.log("element: " + el);
+        let header = select('#header')
+        let offset = header.offsetHeight
+
+        let elementPos = select(el).offsetTop
+        window.scrollTo({
+            top: elementPos - offset,
+            behavior: 'smooth'
+        })
+    }
+
+    function renderFooter() {
+        return (
+            <div>
+                <Button label="Upload" className="p-button-rounded p-button-secondary p-button-sm"
+                        onClick={navigateToInitiateSigningSessionsPage}/>
+                <Button label="Signing Sessions" className="p-button-rounded p-button-secondary p-button-sm"
+                        onClick={navigateToSigningSessionsPage}/>
+            </div>
+        );
+    }
+
+    function onHide() {
+        scrollto("#hero");
+    }
+
     return (
         <>
             {errors ? getErrorView() : <></>}
             <Toast ref={toast} style={{zIndex: 1000}}
             />
+            <Dialog className="dialog-demo" header="Canceled" visible={showDialog}
+                    style={{width: '50vw'}} footer={renderFooter} onHide={onHide}>
+                <p>You have successfully canceled signing session for document <b>{signingSession.documentName}</b>. You
+                    can upload a new document for signing or
+                    continue the signing process for this
+                    document anytime on <i> Signing Sessions</i> page.</p>
+            </Dialog>
             <main
                 id="main">
                 <section id="breadcrumbs" className="breadcrumbs">
@@ -303,48 +427,58 @@ function SignPage({signingSessionId}) {
                                                                                    className="mr-2 mb-2"/> : <></>}
                                         </div>
                                     </div>
-                                    <p className="file-form"> An OTP has been sent to your email address. Please enter
+                                    <p className="file-form"> Code has been sent to your mobile phone. Please enter
                                         it
                                         here to
-                                        complete the document signing process. If your OTP becomes invalid due to
-                                        inactivity, you are able to request for OTP to be sent again to your email
-                                        address. The maximum number of times you can request for a new OTP per
+                                        complete the document signing process. If code hasn't been successfully sent,
+                                        you are able to request for new code to be sent to your mobile
+                                        phone. The maximum number of times you can request for a new code per
                                         signing session is 3, after which your signing session becomes suspended for
                                         half an hour. You are given 3 chances to enter your
-                                        OTP correctly in order to complete the document signing process, otherwise your
+                                        code correctly in order to complete the document signing process, otherwise your
                                         signing session becomes rejected.</p>
                                     {signingSession.signingSession ?
-                                        <div id="otp_form" className="col text-center text-lg-start ms-auto me-auto">
+                                        <div id="code_form" className="col text-center text-lg-start ms-auto me-auto">
                                             <TabView activeIndex={activeIndex}
                                                      onTabChange={(e) => setActiveIndex(e.index)}>
                                                 <TabPanel header="Sign Document" disabled={signDisabled}>
                                                     <form onSubmit={handleSubmit}>
                                                         <div className="d-flex flex-column">
                                                             <div className="pt-2 text-center">
-                                                                <span>An OTP code has been sent to<b>&nbsp;{keycloak.tokenParsed.preferred_username}</b></span>
+                                                                <span>Code has been sent to<b>&nbsp;{keycloak.tokenParsed.mobile}</b></span>
                                                             </div>
                                                             <div className="pt-3">
                                                                 <OtpInput
                                                                     containerStyle={{justifyContent: "center"}}
-                                                                    id="otp-input"
+                                                                    id="code-input"
                                                                     autoComplete="one-time-code"
                                                                     inputStyle="inputStyle"
                                                                     numInputs={numInputs}
-                                                                    onChange={handleOtpChange}
+                                                                    onChange={handleCodeChange}
                                                                     separator={<span>-</span>}
-                                                                    isInputNum={true}
+                                                                    // isInputNum={true}
                                                                     shouldAutoFocus
-                                                                    value={otp}
+                                                                    value={code}
                                                                 />
                                                             </div>
                                                             <div className="pt-5 text-center">
                                                                 <div className="container-fluid">
                                                                     <div className="row">
-                                                                        <div className="col-md-12">
+                                                                        <div className="col-md-6">
                                                                             <div
-                                                                                className="col-md-2 d-grid ms-auto me-auto">
+                                                                                className="col-md-2 d-grid ms-auto ">
+                                                                                <Button label="Cancel"
+                                                                                        className="p-button-rounded p-button-danger float-start"
+                                                                                        onClick={cancelSigningSession}
+                                                                                        type="button"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="col-md-6">
+                                                                            <div
+                                                                                className="col-md-2 d-grid me-auto">
                                                                                 <Button label="Sign"
-                                                                                        disabled={otp.length < numInputs}
+                                                                                        disabled={code.length < numInputs}
                                                                                         className="p-button-rounded p-button-success float-start"
                                                                                         type="submit"
                                                                                 />
@@ -357,7 +491,7 @@ function SignPage({signingSessionId}) {
                                                                                 <br/>
                                                                                 <a role="button"
                                                                                    onClick={handleResend}
-                                                                                   className="getstarted"> Resend [{signingSession.otpAttempts + "/" + maxOtpAttempts}]</a></span>
+                                                                                   className="getstarted"> Resend [{signingSession.resendAttempts + "/" + maxResendAttempts}]</a></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>

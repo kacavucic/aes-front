@@ -45,7 +45,13 @@ function SigningSessionsPage({addSigningSessionId}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
+                    setLoading(false);
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -71,12 +77,12 @@ function SigningSessionsPage({addSigningSessionId}) {
 
     const statusBodyTemplate = (rowData) => {
         return <span
-            className={`status-badge status-${rowData.status.toLowerCase().replace(/\s+/g, '')}`}>{rowData.status}</span>;
+            className={`status-badge status-${rowData.status.toLowerCase().replace(/\s+/g, '')}`}>{rowData.status.replace(/_/g, ' ')}</span>;
     }
 
     let emptySession = {
-        documentName: null,
-        addedOn: null,
+        fileName: null,
+        addedAt: null,
         suspendedUntil: null,
         status: null,
         id: null,
@@ -91,21 +97,21 @@ function SigningSessionsPage({addSigningSessionId}) {
 
         var status = rowData.status.toLowerCase().replace(/\s+/g, '');
 
-        if (status !== "pending" && status !== "canceled") {
+        if (status !== "pending") {
             setApproveDisabled(true);
 
         } else {
             setApproveDisabled(false);
         }
 
-        if (status !== "pending") {
+        if (status !== "pending" && status !== "in_progress") {
             setCancelDisabled(true);
 
         } else {
             setCancelDisabled(false);
         }
 
-        if (status !== "inprogress") {
+        if (status !== "in_progress") {
             setSignDisabled(true);
 
         } else {
@@ -166,7 +172,7 @@ function SigningSessionsPage({addSigningSessionId}) {
                     toast.current.show({
                         severity: 'success',
                         summary: 'Success Message',
-                        detail: "You have successfully canceled document " + session.documentName + ".",
+                        detail: "You have successfully canceled document " + session.document.fileName + ".",
                         life: 10000
                     });
                 }
@@ -179,7 +185,12 @@ function SigningSessionsPage({addSigningSessionId}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));
@@ -198,41 +209,10 @@ function SigningSessionsPage({addSigningSessionId}) {
             });
     }
 
-    function reviewSigningSession(signingSession) {
-        var config = {
-            method: 'put',
-            url: 'http://localhost:8081/v1/aes/signingSessions/' + signingSession.id + '/review',
-            headers: {
-                'Authorization': 'Bearer ' + keycloak.token,
-            }
-        };
 
-        axios(config)
-            .then(function (response) {
-                setErrors(null);
-                console.log(JSON.stringify(response.data));
-                addSigningSessionId(signingSession.id);
-                navigate("/approveSigning");
-            })
-            .catch(function (error) {
-                if (error.response) {
-                    setErrors(error.response.data.errors);
-                    // The client was given an error response (5xx, 4xx)
-                    console.log("Response Error: " + JSON.stringify(error));
-                    console.log("Response Error Data: " + JSON.stringify(error.response.data));
-                    console.log("Response Error Status: " + JSON.stringify(error.response.status));
-                    console.log("Response Error Headers: " + JSON.stringify(error.response.headers));
-                } else if (error.request) {
-                    setErrors(error.request);
-                    // The client never received a response, and the request never left
-                    console.log("Request Error")
-                    console.log(error.request);
-                } else {
-                    setErrors(error.message);
-                    // Anything else
-                    console.log('Error', error.message);
-                }
-            });
+    function approveSigningSession(session) {
+        addSigningSessionId(session.id);
+        navigate("/approveSigning");
     }
 
     const items = [
@@ -244,7 +224,7 @@ function SigningSessionsPage({addSigningSessionId}) {
                     icon: 'pi pi-refresh',
                     disabled: approveDisabled,
                     command: () => {
-                        reviewSigningSession(session);
+                        approveSigningSession(session);
                     }
                 },
                 {
@@ -287,7 +267,7 @@ function SigningSessionsPage({addSigningSessionId}) {
 
     const [filters, setFilters] = useState({
         'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
-        'addedOn': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]},
+        'addedAt': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]},
         'suspendedUntil': {
             operator: FilterOperator.AND,
             constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]
@@ -317,12 +297,14 @@ function SigningSessionsPage({addSigningSessionId}) {
             </span>
         </div>
     );
-    const formatAddedOn = (value) => {
+    const formatAddedAt = (value) => {
 
         return Intl.DateTimeFormat('sr-Latn-RS', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
         }).format(value);
     }
 
@@ -334,12 +316,11 @@ function SigningSessionsPage({addSigningSessionId}) {
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
         }).format(value);
     }
 
-    const addedOnBodyTemplate = (rowData) => {
-        return formatAddedOn(rowData.addedOn * 1000);
+    const addedAtBodyTemplate = (rowData) => {
+        return formatAddedAt(new Date(rowData.document.addedAt * 1000));
     }
     const suspendedUntilBodyTemplate = (rowData) => {
         if (Date.now() > rowData.suspendedUntil * 1000) {
@@ -364,35 +345,39 @@ function SigningSessionsPage({addSigningSessionId}) {
                             <div className="row-col">
                                 <div className="col text-center text-lg-start">
                                     <h3>Signing Sessions</h3>
-                                    <p className="file-form">
-                                        Initiate the signing process by uploading the document you want to sign. Only
-                                        PDF
-                                        file format is supported. The maximum allowed file size for upload is 10MB.
-                                        Empty, malformed, or already signed files are not allowed.</p>
+                                    {/*<p className="file-form">*/}
+                                    {/*    Initiate the signing process by uploading the document you want to sign. Only*/}
+                                    {/*    PDF*/}
+                                    {/*    file format is supported. The maximum allowed file size for upload is 10MB.*/}
+                                    {/*    Empty, malformed, or already signed files are not allowed.</p>*/}
                                     <div>
                                         <div className="datatable-crud-demo">
                                             <Toast ref={toast}/>
 
-                                            <div className="card" style={{padding: 2 + "rem", background: "white"}}>
+                                            <div className="card" style={{
+                                                // padding: 2 + "rem",
+                                                background: "white"}}>
                                                 <DataTable ref={dt} value={sessions}
                                                            filters={filters} filterDisplay="menu"
                                                            rowHover
                                                            loading={loading}
-                                                           sortField="addedOn" sortOrder={-1}
+                                                           sortField="document.addedAt" sortOrder={-1}
                                                            dataKey="id" paginator rows={10}
                                                            rowsPerPageOptions={[5, 10, 25]}
                                                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                                                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} signing sessions"
                                                            globalFilter={globalFilter} header={header}
-                                                           globalFilterFields={["id", "documentName", "addedOn", "suspendedUntil", "status"]}
+                                                           globalFilterFields={["id", "documentName", "addedAt", "suspendedUntil", "status"]}
                                                            responsiveLayout="scroll"
                                                            emptyMessage="No signing sessions found."
                                                 >
-                                                    {/*<Column field="id" header="ID"/>*/}
-                                                    <Column field="documentName" header="Document" sortable/>
+                                                    <Column field="id" header="ID"/>
+                                                    <Column field="document.fileName" header="Document" sortable/>
 
-                                                    <Column field="addedOn" header="Added On" sortable dataType="date"
-                                                            body={addedOnBodyTemplate}/>
+                                                    <Column field="document.addedAt" header="Added At" sortable
+                                                            dataType="date"
+                                                            body={addedAtBodyTemplate}
+                                                    />
                                                     <Column field="suspendedUntil" header="Suspended Until" sortable
                                                             dataType="date"
                                                             body={suspendedUntilBodyTemplate}/>

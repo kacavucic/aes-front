@@ -77,7 +77,7 @@ function App() {
                     <Route path="/sign" element={
                         <PrivateRoute>
                             <ScrollToTop>
-                                <SignPage signingSessionId={signingSessionId}/>
+                                <SignPage signingSessionId={signingSessionId} addSection={addSection}/>
                             </ScrollToTop>
                         </PrivateRoute>}/>
 

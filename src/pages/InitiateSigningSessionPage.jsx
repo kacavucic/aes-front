@@ -70,7 +70,12 @@ function InitiateSigningSessionPage({addSigningSessionId}) {
             })
             .catch(function (error) {
                 if (error.response) {
-                    setErrors(error.response.data.errors);
+                    if (error.response.data.subErrors == null) {
+                        setErrors(error.response.data.debugMessage);
+                    } else {
+                        const messages = error.response.data.subErrors.map(e => e.message);
+                        setErrors(messages);
+                    }
                     // The client was given an error response (5xx, 4xx)
                     console.log("Response Error: " + JSON.stringify(error));
                     console.log("Response Error Data: " + JSON.stringify(error.response.data));

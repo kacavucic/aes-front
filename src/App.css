@@ -1891,7 +1891,7 @@ section {
     color: #fff;
 }
 
-#otp-label {
+#code-label {
     color: #fff;
     font-family: "Jost", sans-serif;
     font-weight: 500;
@@ -2093,7 +2093,7 @@ section {
     min-width: 6rem;
 }
 
-#otp_form .inputStyle {
+#code_form .inputStyle {
     width: 3rem !important;
     height: 3rem;
     margin: 0 1rem;
@@ -2105,19 +2105,19 @@ section {
     /*border: 3px solid #31A3DA*/
 }
 
-#otp_form .inputStyle:disabled {
+#code_form .inputStyle:disabled {
     cursor: not-allowed;
 }
 
 @media only screen and (max-width: 678px) {
 
-    #otp_form label {
+    #code_form label {
         display: block;
         float: left;
         width: 120px;
     }
 
-    #otp_form .card {
+    #code_form .card {
         width: 100%;
         min-width: 120px !important;
         margin: 20px;
@@ -2125,19 +2125,19 @@ section {
 }
 
 @media only screen and (max-width: 470px) {
-    #otp_form .margin-top--small .inputStyle {
+    #code_form .margin-top--small .inputStyle {
         width: 2rem !important;
         height: 2rem;
         margin: 0 5px;
         font-size: 1rem;
     }
 
-    #otp_form .card > form > label {
+    #code_form .card > form > label {
         font-size: 1.2em !important;
     }
 }
 
-#otp_form .card {
+#code_form .card {
     border-radius: 30px;
     box-shadow: 1px 0px 12px 0px #d2dae3;
     z-index: 1;
@@ -2151,37 +2151,37 @@ section {
 
 }
 
-#otp_form .card > form {
+#code_form .card > form {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#otp_form .card > form > label {
+#code_form .card > form > label {
     font-size: 1.5em;
     font-weight: bold;
 }
 
-#otp_form input[type='number']::-webkit-inner-spin-button,
-#otp_form input[type='number']::-webkit-outer-spin-button {
+#code_form input[type='number']::-webkit-inner-spin-button,
+#code_form input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     margin: 0;
 }
 
-#otp_form input[type='number'] {
+#code_form input[type='number'] {
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
 }
 
-#otp_form .btn-row {
+#code_form .btn-row {
     display: flex;
     flex-direction: row;
 }
 
-#otp_form .btn {
+#code_form .btn {
     /*background-color: #3273dc;*/
     border: none;
     padding: 0.5rem 1rem;
@@ -2191,33 +2191,33 @@ section {
     margin: 1rem;
 }
 
-#otp_form .btn:disabled {
+#code_form .btn:disabled {
     background-color: rgba(0, 0, 0, 0.4);
     cursor: not-allowed;
 }
 
-#otp_form .margin-top--small {
+#code_form .margin-top--small {
     margin-top: 1rem;
     margin-bottom: -1rem;
 }
 
-#otp_form .margin-top--small > div {
+#code_form .margin-top--small > div {
     flex-wrap: wrap;
 }
 
-#otp_form .margin-top--small > div > div {
+#code_form .margin-top--small > div > div {
     margin-bottom: 1rem;
 }
 
-#otp_form .margin-top--medium {
+#code_form .margin-top--medium {
     margin-top: 1.5rem;
 }
 
-#otp_form .margin-top--large {
+#code_form .margin-top--large {
     margin-top: 4rem;
 }
 
-#otp_form .error {
+#code_form .error {
     border: 1px solid red !important;
 }
 
