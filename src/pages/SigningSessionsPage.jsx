@@ -40,7 +40,7 @@ function SigningSessionsPage({addSigningSessionId}) {
             .then(function (response) {
                 setErrors(null);
                 console.log(JSON.stringify(response.data));
-                setSessions(response.data.signingSessions);
+                setSessions(response.data);
                 setLoading(false);
             })
             .catch(function (error) {
